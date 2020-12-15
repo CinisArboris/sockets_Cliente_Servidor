@@ -36,7 +36,7 @@ public class ClienteSMTP {
     }
     
     /**
-     * Conexión simple al servidor SMTP.
+     * Conexión simple al servidor.
      */
     void test_cliente_01() {
         try {
@@ -49,12 +49,16 @@ public class ClienteSMTP {
             socCli.close();
         } catch (IOException ex) {
             //Logger.getLogger(ClienteSMTP.class.getName()).log(Level.SEVERE, null, ex);
-            System.out.println("[S]ERROR 404");
+            System.err.println("[System]ERROR 404");
         }
     }
     
     public static void main(String[] args) throws IOException {
-        ClienteSMTP cli = new ClienteSMTP("www.tecnoweb.org.bo", 25);
+        // Conexion simple
+        ClienteSMTP cli = new ClienteSMTP("127.0.0.1", 25);
         cli.test_cliente_01();
+        
+        // Conexion para 3
+        
     }
 }
