@@ -89,11 +89,9 @@ public class ClienteBD {
     
     private void conectar() {
         Scanner input = new Scanner(System.in);
-        
-        System.out.print("[USR] ");
+        System.out.print("[BD :: USR] ");
         this.setUSR(input.nextLine());
-            
-        System.out.print("[PWD] ");
+        System.out.print("[BD :: PWD] ");
         this.setPWD(input.nextLine());
         
         this.setNAV("user", this.getUSR());
@@ -107,7 +105,6 @@ public class ClienteBD {
         this.setCNX(urlBD, this.getNAV());
         System.out.println("200 - CONECTADO");
     }
-    
     private void desconectar() {
         try {
             this.CNX.close();
@@ -117,16 +114,10 @@ public class ClienteBD {
             System.err.println("ERROR - desconectar");
         }
     }
-    public static void main(String[] args) {
-        ClienteBD cli = new ClienteBD();
-        cli.conectar();
-        cli.consultaSQL();
-        cli.desconectar();
-    }
-    private void consultaSQL() {
+    private void consultaSQL(String consulta) {
         try {
             Statement shell = this.getCNX().createStatement();
-            ResultSet res = shell.executeQuery("select * from amigo");
+            ResultSet res = shell.executeQuery(consulta);
             ResultSetMetaData meta = res.getMetaData();
             
             int column = meta.getColumnCount();
@@ -144,6 +135,12 @@ public class ClienteBD {
             Logger.getLogger(ClienteBD.class.getName()).log(Level.SEVERE, null, ex);
             System.err.println("ERROR - consultaSQL");
         }
-        
+    }
+    
+    public static void main(String[] args) {
+        ClienteBD cli = new ClienteBD();
+        cli.conectar();
+        cli.consultaSQL("select * from amigo");
+        cli.desconectar();
     }
 }

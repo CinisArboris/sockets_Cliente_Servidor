@@ -2,8 +2,6 @@ package SERVIDOR;
 
 import java.io.*;
 import java.net.*;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 /**
  *
@@ -35,8 +33,10 @@ public class ServidorSMTP {
         this.PUERTO = PUERTO;
     }
     
-    
-    
+    /**
+     * Servidor simple.
+     * Espera a [1 cliente] y solo da [1 respuesta].
+     */
     void test_servidor_01() {
         try {
             ServerSocket socSer = new ServerSocket(this.getPUERTO());
@@ -44,8 +44,36 @@ public class ServidorSMTP {
             
             Socket socCli = socSer.accept();
             DataOutputStream salida = new DataOutputStream (socCli.getOutputStream());
-            salida.writeBytes("HELO");
+            
+            salida.writeBytes("HELO\n");
+            
             socCli.close();
+        } catch (IOException ex) {
+            //Logger.getLogger(ServidorSMTP.class.getName()).log(Level.SEVERE, null, ex);
+            System.err.println("ERROR :: 404");
+        }
+    }
+    
+    /**
+     * Servidor simple con limite de conexiones.
+     */
+    private void test_servidor_02() {
+        try {
+            ServerSocket socSer = new ServerSocket(this.getPUERTO());
+            System.out.println("[S] Esperando clientes...");
+            
+            int nroClientes = 1;
+            Socket socCli;
+            while (nroClientes <= 3){
+                System.out.println("[System] Welcome " + nroClientes);
+                socCli = socSer.accept();
+                DataOutputStream salida = new DataOutputStream (socCli.getOutputStream());
+                salida.writeBytes("HELO :: " + nroClientes);
+                nroClientes++;
+                socCli.close();
+            }
+            System.err.println("[System] Limite de clientes por hoy.");
+            //socCli.close();
         } catch (IOException ex) {
             //Logger.getLogger(ServidorSMTP.class.getName()).log(Level.SEVERE, null, ex);
             System.err.println("ERROR :: 404");
@@ -54,6 +82,7 @@ public class ServidorSMTP {
     
     public static void main(String[] args) {
         ServidorSMTP serv = new ServidorSMTP();
-        serv.test_servidor_01();
+        //serv.test_servidor_01();
+        serv.test_servidor_02();
     }
 }

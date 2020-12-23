@@ -2,7 +2,6 @@ package CLIENTE;
 
 import java.io.*;
 import java.net.*;
-import java.util.HashSet;
 import java.util.concurrent.TimeUnit;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -73,6 +72,8 @@ public class ClienteSMTP {
 
     /**
      * Conexion simple enviando mensaje.
+     * Requisitos:
+     * [Dovecot] or [Sendmail]
      */
     private void test_cliente_03() {
         try {
@@ -118,7 +119,7 @@ public class ClienteSMTP {
             // #Asignar el mensaje del mensaje.
             this.setCmd(
                     "HOLA HOLA TECNO WEB"+"\r\n"+
-                    "Mensaje nocturno desde java"+"\r\n"
+                    "Mensaje ocasional desde java"+"\r\n"
                 );
             System.out.println(this.getCmd());
             salida.writeBytes(this.getCmd());
@@ -145,16 +146,21 @@ public class ClienteSMTP {
     
     public static void main(String[] args) throws IOException {
         // #Inicializacion de los [CLIENTES].
-        /* A */ //ClienteSMTP cli = new ClienteSMTP("127.0.0.1", 25);
-        /* B */ ClienteSMTP cli = new ClienteSMTP();//B
+        /* A */ ClienteSMTP cli = new ClienteSMTP("127.0.0.1", 25);
+        /* B */ //ClienteSMTP cli = new ClienteSMTP();//B
         
         // #Conexion simple.
-        //cli.test_cliente_01();
+        cli.test_cliente_01();
         
         // #Conexion simple 3 sesiones paralelas.
         //cli.test_cliente_02();
         
         // #Conexion simple enviar mensaje.
-        cli.test_cliente_03();
+        //cli.test_cliente_03();
+        //cli.test_cliente_04("er");
+    }
+
+    private void test_cliente_04(String er) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 }
