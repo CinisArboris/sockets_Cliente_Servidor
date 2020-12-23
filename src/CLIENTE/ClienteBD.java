@@ -96,7 +96,6 @@ public class ClienteBD {
         System.out.print("[PWD] ");
         this.setPWD(input.nextLine());
         
-        System.out.println(this.getUSR() + this.getPWD());
         this.setNAV("user", this.getUSR());
         this.setNAV("password", this.getPWD());
         this.setNAV("ssl", "false");
@@ -121,7 +120,30 @@ public class ClienteBD {
     public static void main(String[] args) {
         ClienteBD cli = new ClienteBD();
         cli.conectar();
+        cli.consultaSQL();
         cli.desconectar();
+    }
+    private void consultaSQL() {
+        try {
+            Statement shell = this.getCNX().createStatement();
+            ResultSet res = shell.executeQuery("select * from amigo");
+            ResultSetMetaData meta = res.getMetaData();
+            
+            int column = meta.getColumnCount();
+            while (res.next()){
+                for (int i = 1; i <= column; i++){
+                    System.out.print(res.getString(i));
+                    System.out.print("|");
+                }
+                System.out.println("");
+                System.out.println("*****************************************");
+            }
+            shell.close();
+            res.close();
+        } catch (SQLException ex) {
+            Logger.getLogger(ClienteBD.class.getName()).log(Level.SEVERE, null, ex);
+            System.err.println("ERROR - consultaSQL");
+        }
         
     }
 }
