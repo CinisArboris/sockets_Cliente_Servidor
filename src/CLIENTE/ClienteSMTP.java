@@ -14,25 +14,24 @@ public class ClienteSMTP {
     private String HOST;
     private int PUERTO;
     private String CMD;
-    private String from;
-    private String to;
+    private String FROM;
+    private String TO;
 
-    /**
-     * Valores de conexión por defecto.
-     */
     public ClienteSMTP() {
-        this.HOST = "www.tecnoweb.org.bo";
+        this.HOST   = "www.tecnoweb.org.bo";
         this.PUERTO = 25;
+        this.FROM   = "minpres@presidencia.gob.bo";
+        this.TO     = "grupo01sa@tecnoweb.org.bo";
     }
-    
-    /**
-     * Establecer valores de conexión.
-     * @param HOST
-     * @param PUERTO 
-     */
     public ClienteSMTP(String HOST, int PUERTO) {
         this.HOST = HOST;
         this.PUERTO = PUERTO;
+    }
+    public ClienteSMTP(String HOST, int PUERTO, String FROM, String TO) {
+        this.HOST = HOST;
+        this.PUERTO = PUERTO;
+        this.FROM = FROM;
+        this.TO = TO;
     }
 
     public String getHOST() {
@@ -53,19 +52,31 @@ public class ClienteSMTP {
     public void setCMD(String CMD) {
         this.CMD = CMD;
     }
+    public String getFROM() {
+        return FROM;
+    }
+    public void setFROM(String FROM) {
+        this.FROM = FROM;
+    }
+    public String getTO() {
+        return TO;
+    }
+    public void setTO(String TO) {
+        this.TO = TO;
+    }
     
     /**
      * Conexión simple al servidor.
      */
     private void test_cliente_01() {
         try {
-            Socket sok = new Socket(this.getHOST(), this.getPUERTO());
-            BufferedReader entrada = new BufferedReader(new InputStreamReader(sok.getInputStream()));
+            Socket cli = new Socket(this.getHOST(), this.getPUERTO());
+            BufferedReader entrada = new BufferedReader(new InputStreamReader(cli.getInputStream()));
             
             System.out.println("[C]"+"Conectado a:"+this.getHOST());
             System.out.println("[S]"+entrada.readLine());
             
-            sok.close();
+            cli.close();
         } catch (IOException ex) {
             //Logger.getLogger(ClienteSMTP.class.getName()).log(Level.SEVERE, null, ex);
             System.err.println("[System]ERROR 404");
@@ -79,9 +90,9 @@ public class ClienteSMTP {
      */
     private void test_cliente_02() {
         try {
-            Socket sok = new Socket(this.getHOST(), this.getPUERTO());
-            BufferedReader entrada = new BufferedReader(new InputStreamReader(sok.getInputStream()));
-            DataOutputStream salida = new DataOutputStream (sok.getOutputStream());
+            Socket cli = new Socket(this.getHOST(), this.getPUERTO());
+            BufferedReader entrada = new BufferedReader(new InputStreamReader(cli.getInputStream()));
+            DataOutputStream salida = new DataOutputStream (cli.getOutputStream());
             
             // #Primer contacto.
             System.err.println("[C]Conectando ..."+this.getHOST()+":"+this.getPUERTO());
@@ -96,13 +107,13 @@ public class ClienteSMTP {
             
             // #Asignar el correo emisor del mensaje.
             //this.setCMD("mail from: "+"eyver.evm@gmail.com"+"\r\n");
-            this.setCMD("mail from: "+"minpres@presidencia.gob.bo"+"\r\n");
+            this.setCMD("mail from:"+" "+this.getFROM()+"\r\n");
             salida.writeBytes(this.getCMD());
             System.out.println("[S]"+entrada.readLine());
             TimeUnit.SECONDS.sleep(1);
             
             // #Asignar el correo destino del mensaje.
-            this.setCMD("rcpt to: "+"grupo03sa@tecnoweb.org.bo"+"\r\n");
+            this.setCMD("rcpt to:"+" "+this.getTO()+"\r\n");
             salida.writeBytes(this.getCMD());
             System.out.println("[S]"+entrada.readLine());
             TimeUnit.SECONDS.sleep(1);
@@ -114,15 +125,15 @@ public class ClienteSMTP {
             TimeUnit.SECONDS.sleep(1);
             
             // #Asignar el asunto del mensaje.
-            this.setCMD("subject: er \r\n");
+            this.setCMD("subject: Descolonización imperialista. \r\n");
             System.out.println(this.getCMD());
             salida.writeBytes(this.getCMD());
             TimeUnit.SECONDS.sleep(1);
             
             // #Asignar el mensaje del mensaje.
             this.setCMD(
-                    "AHORA SI, WERRA SHEVEL"+"\r\n"+
-                    "1, 2, 3, 4, 5, 6, 7, 8."+"\r\n"
+                    "Este servidor imperialista, ahora esta descolonizado"+"\r\n"+
+                    "Propiedad de los AYLLUS Y MAMANIS - INC."+"\r\n"
                 );
             System.out.println(this.getCMD());
             salida.writeBytes(this.getCMD());
@@ -135,7 +146,7 @@ public class ClienteSMTP {
             TimeUnit.SECONDS.sleep(1);
             
             System.err.println("[C]Cerrando sesión.");
-            sok.close();
+            cli.close();
             entrada.close();
             salida.close();
         } catch (IOException ex) {
@@ -149,16 +160,16 @@ public class ClienteSMTP {
     
     public static void main(String[] args) throws IOException {
         // #Inicializacion de los [CLIENTES].
-        /* A */ //ClienteSMTP cli = new ClienteSMTP("127.0.0.1", 25);
-        /* A */ ClienteSMTP cli = new ClienteSMTP("192.168.1.2", 25);
-        /* B */ //ClienteSMTP cli = new ClienteSMTP();//B
-        
+        /* local */ //ClienteSMTP cli = new ClienteSMTP("127.0.0.1", 25);
+        /* tecno */ //ClienteSMTP cli = new ClienteSMTP("www.tecnoweb.org.bo", 25, "minpres@presidencia.gob.bo", "grupo01sa@tecnoweb.org.bo");
+        /* fedSe */ ClienteSMTP cli = new ClienteSMTP("192.168.1.2", 25, "minpres@presidencia.gob.bo", "freyja@freyja.wiki.bo");
+
         // #Conexion simple.
         //cli.test_cliente_01();
         
         // #Conexion simple enviar mensaje.
-        //cli.test_cliente_02();
-        cli.test_cliente_03();
+        cli.test_cliente_02();
+        //cli.test_cliente_03();
         //cli.test_cliente_04("er");
     }
 
