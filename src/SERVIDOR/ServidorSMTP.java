@@ -82,7 +82,7 @@ public class ServidorSMTP {
     
     public static void main(String[] args) {
         ServidorSMTP serv = new ServidorSMTP();
-        //serv.test_servidor_01();
-        serv.test_servidor_02();
+        serv.test_servidor_01();
+        //serv.test_servidor_02();
     }
 }
