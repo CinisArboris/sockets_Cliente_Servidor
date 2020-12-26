@@ -31,8 +31,6 @@ public class ClienteBD {
         this.CNX = null;
     }
     
-    
-
     public String getHOST() {
         return HOST;
     }
