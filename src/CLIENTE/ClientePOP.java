@@ -2,6 +2,7 @@ package CLIENTE;
 
 import java.io.*;
 import java.net.*;
+import java.util.Arrays;
 import java.util.Scanner;
 import java.util.concurrent.TimeUnit;
 import java.util.logging.Level;
@@ -17,6 +18,7 @@ public class ClientePOP {
     private String USR;
     private String PWD;
     private String CMD;
+    private String SMS;
 
     public ClientePOP() {
         this.HOST = "www.tecnoweb.org.bo";
@@ -57,7 +59,13 @@ public class ClientePOP {
     public void setCMD(String CMD) {
         this.CMD = CMD;
     }
-
+    public String getSMS() {
+        return SMS;
+    }
+    public void setSMS(String SMS) {
+        this.SMS = SMS;
+    }
+    
     /**
      * Recopila multiples lineas de la respuesta del servidor.
      * @param entrada
@@ -89,15 +97,32 @@ public class ClientePOP {
     }
     
     /**
-     * Conexión al servidior y listar bozones.
+     * Ingresar las credenciales de la cuenta POP.
+     */
+    private void signIN() {
+        Scanner input = new Scanner(System.in);
+        System.err.print("[POP :: USR] ");
+        this.setUSR(input.nextLine());
+        System.err.print("[POP :: PWD] ");
+        this.setPWD(input.nextLine());
+    }
+    
+    /**
+     * Guarda el ultimo mensaje en la bandeja.
+     * @param entrada 
+     */
+    private void getLastSMS(String entrada) {
+        String[] tmp = entrada.split(" ");
+        String tmp2 = tmp[tmp.length-2];
+        tmp = tmp2.split("\n");
+        tmp2 = tmp[1];
+        this.setSMS(tmp2);
+    }
+    
+    /**
+     * Conexión al servidior - Listar buzon - Guardar el último mensaje.
      */
     private void test_cliente_01() {
-        Scanner input = new Scanner(System.in);
-        System.out.print("[POP :: USR] ");
-        this.setUSR(input.nextLine());
-        System.out.print("[POP :: PWD] ");
-        this.setPWD(input.nextLine());
-        
         try {
             Socket sok = new Socket(this.getHOST(), this.getPORT());
             BufferedReader entrada = new BufferedReader(new InputStreamReader(sok.getInputStream()));
@@ -133,7 +158,9 @@ public class ClientePOP {
             System.out.println("LIST");
             this.setCMD("LIST"+"\r\n");
             salida.writeBytes(this.getCMD());
-            System.out.println("[S]"+this.getMultiLine(entrada));
+            String lineas = this.getMultiLine(entrada);
+//            System.out.println("[S]"+lineas);
+            this.getLastSMS(lineas);
             TimeUnit.SECONDS.sleep(1);
             
             // #Fin del mensaje.
@@ -146,6 +173,7 @@ public class ClientePOP {
             sok.close();
             entrada.close();
             salida.close();
+            TimeUnit.SECONDS.sleep(2);
         } catch (IOException ex) {
             Logger.getLogger(ClienteSMTP.class.getName()).log(Level.SEVERE, null, ex);
             System.err.println("[System]ERROR 404");
@@ -159,13 +187,7 @@ public class ClientePOP {
      * Conexion al servidor y extraer el mensaje X.
      * @param nro_mensaje 
      */
-    private void test_cliente_02(int nro_mensaje) {
-        Scanner input = new Scanner(System.in);
-        System.out.print("[POP :: USR] ");
-        this.setUSR(input.nextLine());
-        System.out.print("[POP :: PWD] ");
-        this.setPWD(input.nextLine());
-        
+    private void test_cliente_02() {
         try {
             Socket sok = new Socket(this.getHOST(), this.getPORT());
             BufferedReader entrada = new BufferedReader(new InputStreamReader(sok.getInputStream()));
@@ -191,8 +213,8 @@ public class ClientePOP {
             TimeUnit.SECONDS.sleep(1);
             
             // #get mensaje del correo.
-            System.out.println("RETR " + nro_mensaje);
-            this.setCMD("RETR"+" "+nro_mensaje+"\r\n");
+            System.out.println("RETR "+this.getSMS());
+            this.setCMD("RETR"+" "+this.getSMS()+"\r\n");
             salida.writeBytes(this.getCMD());
             System.out.println("[S]"+this.getMultiLine(entrada));
             TimeUnit.SECONDS.sleep(1);
@@ -207,6 +229,7 @@ public class ClientePOP {
             sok.close();
             entrada.close();
             salida.close();
+            TimeUnit.SECONDS.sleep(2);
         } catch (IOException ex) {
             Logger.getLogger(ClienteSMTP.class.getName()).log(Level.SEVERE, null, ex);
             System.err.println("[System]ERROR 404");
@@ -219,14 +242,17 @@ public class ClientePOP {
     public static void main(String[] args) {
         // #Inicializacion de los [CLIENTES].
         /* A */ //ClientePOP cli = new ClientePOP("127.0.0.1", 110);
-        /* A */ ClientePOP cli = new ClientePOP("192.168.1.2", 110);
-        /* B */ //ClientePOP cli = new ClientePOP();//B
+        /* A */ //ClientePOP cli = new ClientePOP("192.168.1.2", 110);
+        /* B */ ClientePOP cli = new ClientePOP();//B
         
-        // #Listar mensajes.
-        //cli.test_cliente_01();
+        // #Cargar credenciales.
+        cli.signIN();
+        
+        // #Listar mensajes y obtener el ultimo.
+        cli.test_cliente_01();
         
         // #Obtener mensaje.
-        cli.test_cliente_02(6);
+        cli.test_cliente_02();
     }
 
     
