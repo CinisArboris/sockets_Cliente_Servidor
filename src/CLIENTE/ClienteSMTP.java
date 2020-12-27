@@ -165,14 +165,14 @@ public class ClienteSMTP {
 //        ClienteSMTP cli = new ClienteSMTP("127.0.0.1", 25);
         
         /* tecno */
-        ClienteSMTP cli = new ClienteSMTP("www.tecnoweb.org.bo", 25,
-                "minpres@presidencia.gob.bo",
-                "grupo01sa@tecnoweb.org.bo");
+//        ClienteSMTP cli = new ClienteSMTP("www.tecnoweb.org.bo", 25,
+//                "minpres@presidencia.gob.bo",
+//                "grupo01sa@tecnoweb.org.bo");
         
         /* fedSe */
-//        ClienteSMTP cli = new ClienteSMTP("192.168.1.2", 25,
-//                "minpres@presidencia.gob.bo",
-//                "freyja@freyja.wiki.bo");
+        ClienteSMTP cli = new ClienteSMTP("192.168.1.2", 25,
+                "minpres@presidencia.gob.bo",
+                "freyja@freyja.wiki.bo");
 
         // #Conexion simple.
         //cli.test_cliente_01();

@@ -25,8 +25,14 @@ public class ClienteBD {
         this.PORT = "5432";
         this.BD = "db_agenda";
         this.TBL = "amigo";
-        this.USR = "default";
-        this.PWD = "default";
+        this.NAV = new Properties();
+        this.CNX = null;
+    }
+    public ClienteBD(String HOST, String PORT, String BD, String TBL) {
+        this.HOST = HOST;
+        this.PORT = PORT;
+        this.BD = BD;
+        this.TBL = TBL;
         this.NAV = new Properties();
         this.CNX = null;
     }
@@ -82,16 +88,25 @@ public class ClienteBD {
         } catch (SQLException ex) {
             //Logger.getLogger(ClienteBD.class.getName()).log(Level.SEVERE, null, ex);
             System.err.println("ERROR - setCNX");
+            System.exit(404);
         }
     }
     
-    private void conectar() {
+     /**
+     * Ingresar las credenciales de la cuenta BD.
+     */
+    private void signIN() {
         Scanner input = new Scanner(System.in);
         System.out.print("[BD :: USR] ");
         this.setUSR(input.nextLine());
         System.out.print("[BD :: PWD] ");
         this.setPWD(input.nextLine());
-        
+    }
+    
+    /**
+     * Iniciar la conexión a la BD.
+     */
+    private void conectar() {
         this.setNAV("user", this.getUSR());
         this.setNAV("password", this.getPWD());
         this.setNAV("ssl", "false");
@@ -103,6 +118,10 @@ public class ClienteBD {
         this.setCNX(urlBD, this.getNAV());
         System.out.println("200 - CONECTADO");
     }
+    
+    /**
+     * Cerrar la conexión a la BD.
+     */
     private void desconectar() {
         try {
             this.CNX.close();
@@ -112,6 +131,11 @@ public class ClienteBD {
             System.err.println("ERROR - desconectar");
         }
     }
+    
+    /**
+     * Ejecutar una consulta a la BD.
+     * @param consulta 
+     */
     private void consultaSQL(String consulta) {
         try {
             Statement shell = this.getCNX().createStatement();
@@ -136,7 +160,17 @@ public class ClienteBD {
     }
     
     public static void main(String[] args) {
-        ClienteBD cli = new ClienteBD();
+        /* Servidor local  */
+//        ClienteBD cli = new ClienteBD();
+        
+        /* Servidor freyja */
+        ClienteBD cli = new ClienteBD("192.168.1.9", "5432", 
+                "db_agenda", "amigo");
+        /* Servidor tecno  */
+//        ClienteBD cli = new ClienteBD("www.tecnoweb.org.bo", "5432",
+//                "db_agenda", "amigo");
+        
+        cli.signIN();
         cli.conectar();
         cli.consultaSQL("select * from amigo");
         cli.desconectar();
