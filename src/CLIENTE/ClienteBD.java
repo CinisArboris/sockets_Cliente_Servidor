@@ -161,11 +161,12 @@ public class ClienteBD {
     
     public static void main(String[] args) {
         /* Servidor local  */
-//        ClienteBD cli = new ClienteBD();
+        ClienteBD cli = new ClienteBD();
         
         /* Servidor freyja */
-        ClienteBD cli = new ClienteBD("192.168.1.9", "5432", 
-                "db_agenda", "amigo");
+//        ClienteBD cli = new ClienteBD("192.168.1.9", "5432", 
+//                "db_agenda", "amigo");
+        
         /* Servidor tecno  */
 //        ClienteBD cli = new ClienteBD("www.tecnoweb.org.bo", "5432",
 //                "db_agenda", "amigo");

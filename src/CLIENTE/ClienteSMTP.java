@@ -159,6 +159,81 @@ public class ClienteSMTP {
         }
     }
     
+    /**
+     * Conexión simple, enviar mensaje, subject custom.
+     * @param subject 
+     */
+    private void test_cliente_03(String subject) {
+        try {
+            Socket cli = new Socket(this.getHOST(), this.getPUERTO());
+            BufferedReader entrada = new BufferedReader(new InputStreamReader(cli.getInputStream()));
+            DataOutputStream salida = new DataOutputStream (cli.getOutputStream());
+            
+            // #Primer contacto.
+            System.err.println("[C]Conectando ..."+this.getHOST()+":"+this.getPUERTO());
+            System.out.println("[S]"+entrada.readLine());
+            TimeUnit.SECONDS.sleep(1);
+            
+            // #Saludo al servidor.
+            this.setCMD("helo "+this.getHOST()+"\r\n");
+            salida.writeBytes(this.getCMD());
+            System.out.println("[S]"+entrada.readLine());
+            TimeUnit.SECONDS.sleep(1);
+            
+            // #Asignar el correo emisor del mensaje.
+            //this.setCMD("mail from: "+"eyver.evm@gmail.com"+"\r\n");
+            this.setCMD("mail from:"+" "+this.getFROM()+"\r\n");
+            salida.writeBytes(this.getCMD());
+            System.out.println("[S]"+entrada.readLine());
+            TimeUnit.SECONDS.sleep(1);
+            
+            // #Asignar el correo destino del mensaje.
+            this.setCMD("rcpt to:"+" "+this.getTO()+"\r\n");
+            salida.writeBytes(this.getCMD());
+            System.out.println("[S]"+entrada.readLine());
+            TimeUnit.SECONDS.sleep(1);
+            
+            // #Asignar los datos del mensaje.
+            this.setCMD("data"+"\r\n");
+            salida.writeBytes(this.getCMD());
+            System.out.println("[S]"+entrada.readLine());
+            TimeUnit.SECONDS.sleep(1);
+            
+            // #Asignar el asunto del mensaje.
+            this.setCMD("subject: "+subject+".\r\n");
+            System.out.println(this.getCMD());
+            salida.writeBytes(this.getCMD());
+            TimeUnit.SECONDS.sleep(1);
+            
+            // #Asignar el mensaje del mensaje.
+            this.setCMD(
+                    "AUFWIEDERSEHEN\r\n"+
+                    "AUFWIEDERSEHEN\r\n"+
+                    "AUFWIEDERSEHEN\r\n"
+                );
+            System.out.println(this.getCMD());
+            salida.writeBytes(this.getCMD());
+            TimeUnit.SECONDS.sleep(1);
+            
+            // #Fin del mensaje.
+            this.setCMD("."+"\r\n");
+            salida.writeBytes(this.getCMD());
+            System.out.println("[S]"+entrada.readLine());
+            TimeUnit.SECONDS.sleep(1);
+            
+            System.err.println("[C]Cerrando sesión.");
+            cli.close();
+            entrada.close();
+            salida.close();
+        } catch (IOException ex) {
+            //Logger.getLogger(ClienteSMTP.class.getName()).log(Level.SEVERE, null, ex);
+            System.err.println("[System]ERROR 404");
+        } catch (InterruptedException ex) {
+            Logger.getLogger(ClienteSMTP.class.getName()).log(Level.SEVERE, null, ex);
+            System.err.println("[System]ERROR SLEEP");
+        }
+    }
+    
     public static void main(String[] args) throws IOException {
         // #Inicializacion de los [CLIENTES].
         /* local */
@@ -175,9 +250,12 @@ public class ClienteSMTP {
                 "freyja@freyja.wiki.bo");
 
         // #Conexion simple.
-        //cli.test_cliente_01();
+        cli.test_cliente_01();
         
         // #Conexion simple enviar mensaje.
         cli.test_cliente_02();
+        
+        // #Conexion simple, enviar mensaje personalizado.
+        cli.test_cliente_03("er");
     }
 }

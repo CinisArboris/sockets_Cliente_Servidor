@@ -241,9 +241,11 @@ public class ClientePOP {
 
     public static void main(String[] args) {
         // #Inicializacion de los [CLIENTES].
-        /* A */ //ClientePOP cli = new ClientePOP("127.0.0.1", 110);
-        /* A */ //ClientePOP cli = new ClientePOP("192.168.1.2", 110);
-        /* B */ ClientePOP cli = new ClientePOP();//B
+        /* local  */ //ClientePOP cli = new ClientePOP("127.0.0.1", 110);
+        /* freyja */ ClientePOP cli = new ClientePOP("192.168.1.2", 110);
+        /* tecno  */ //ClientePOP cli = new ClientePOP();//B
+        
+        System.err.println("[Conexión] ::"+cli.getHOST());
         
         // #Cargar credenciales.
         cli.signIN();
