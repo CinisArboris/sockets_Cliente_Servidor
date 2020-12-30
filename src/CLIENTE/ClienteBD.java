@@ -93,7 +93,7 @@ public class ClienteBD {
     }
     
      /**
-     * Ingresar las credenciales de la cuenta BD.
+     * Ingresar las credenciales para la conexión : BD.
      */
     private void signIN() {
         System.err.println("BD : Conectando : "+this.getHOST()+":"+this.getPORT());

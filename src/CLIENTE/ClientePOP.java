@@ -96,10 +96,10 @@ public class ClientePOP {
     }
     
     /**
-     * Ingresar las credenciales de la cuenta POP.
+     * Ingresar las credenciales para la conexión : POP.
      */
     private void signIN() {
-        System.out.println("POP : Conectando : "+this.getHOST()+":"+this.getPORT());
+        System.err.println("POP : Conectando : "+this.getHOST()+":"+this.getPORT());
         
         Scanner input = new Scanner(System.in);
         System.err.print("[POP :: USR] ");
