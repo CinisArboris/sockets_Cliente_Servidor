@@ -2,7 +2,6 @@ package CLIENTE;
 
 import java.io.*;
 import java.net.*;
-import java.util.Arrays;
 import java.util.Scanner;
 import java.util.concurrent.TimeUnit;
 import java.util.logging.Level;
@@ -100,6 +99,8 @@ public class ClientePOP {
      * Ingresar las credenciales de la cuenta POP.
      */
     private void signIN() {
+        System.out.println("POP : Conectando : "+this.getHOST()+":"+this.getPORT());
+        
         Scanner input = new Scanner(System.in);
         System.err.print("[POP :: USR] ");
         this.setUSR(input.nextLine());
@@ -129,7 +130,6 @@ public class ClientePOP {
             DataOutputStream salida = new DataOutputStream (sok.getOutputStream());
             
             // #Primer contacto.
-            System.err.println("[C]Conectando ..."+this.getHOST()+":"+this.getPORT());
             System.out.println("[S]"+entrada.readLine());
             TimeUnit.SECONDS.sleep(1);
             
@@ -184,7 +184,7 @@ public class ClientePOP {
     }
     
     /**
-     * Conexion al servidor y extraer el mensaje X.
+     * Conexion al servidor - extraer el mensaje X.
      * @param nro_mensaje 
      */
     private void test_cliente_02() {
@@ -194,7 +194,6 @@ public class ClientePOP {
             DataOutputStream salida = new DataOutputStream (sok.getOutputStream());
             
             // #Primer contacto.
-            System.err.println("[C]Conectando ..."+this.getHOST()+":"+this.getPORT());
             System.out.println("[S]"+entrada.readLine());
             TimeUnit.SECONDS.sleep(1);
             
@@ -241,9 +240,14 @@ public class ClientePOP {
 
     public static void main(String[] args) {
         // #Inicializacion de los [CLIENTES].
-        /* local  */ //ClientePOP cli = new ClientePOP("127.0.0.1", 110);
-        /* freyja */ ClientePOP cli = new ClientePOP("192.168.1.2", 110);
-        /* tecno  */ //ClientePOP cli = new ClientePOP();//B
+        /* local  */
+        //ClientePOP cli = new ClientePOP("127.0.0.1", 110);
+        
+        /* freyja */
+        //ClientePOP cli = new ClientePOP("192.168.1.2", 110);
+        
+        /* tecno  */
+        ClientePOP cli = new ClientePOP();//B
         
         System.err.println("[Conexión] ::"+cli.getHOST());
         

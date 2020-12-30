@@ -12,24 +12,24 @@ import java.util.logging.Logger;
  */
 public class ClienteSMTP {
     private String HOST;
-    private int PUERTO;
+    private int PORT;
     private String CMD;
     private String FROM;
     private String TO;
 
     public ClienteSMTP() {
         this.HOST   = "www.tecnoweb.org.bo";
-        this.PUERTO = 25;
+        this.PORT   = 25;
         this.FROM   = "minpres@presidencia.gob.bo";
         this.TO     = "grupo01sa@tecnoweb.org.bo";
     }
     public ClienteSMTP(String HOST, int PUERTO) {
         this.HOST = HOST;
-        this.PUERTO = PUERTO;
+        this.PORT = PUERTO;
     }
     public ClienteSMTP(String HOST, int PUERTO, String FROM, String TO) {
         this.HOST = HOST;
-        this.PUERTO = PUERTO;
+        this.PORT = PUERTO;
         this.FROM = FROM;
         this.TO = TO;
     }
@@ -40,11 +40,11 @@ public class ClienteSMTP {
     public void setHOST(String HOST) {
         this.HOST = HOST;
     }
-    public int getPUERTO() {
-        return PUERTO;
+    public int getPORT() {
+        return PORT;
     }
-    public void setPUERTO(int PUERTO) {
-        this.PUERTO = PUERTO;
+    public void setPORT(int PORT) {
+        this.PORT = PORT;
     }
     public String getCMD() {
         return CMD;
@@ -70,10 +70,9 @@ public class ClienteSMTP {
      */
     private void test_cliente_01() {
         try {
-            Socket cli = new Socket(this.getHOST(), this.getPUERTO());
+            Socket cli = new Socket(this.getHOST(), this.getPORT());
             BufferedReader entrada = new BufferedReader(new InputStreamReader(cli.getInputStream()));
             
-            System.out.println("[C]"+"Conectado a:"+this.getHOST());
             System.out.println("[S]"+entrada.readLine());
             
             cli.close();
@@ -84,18 +83,17 @@ public class ClienteSMTP {
     }
     
     /**
-     * Conexion simple al servidor y enviar mensaje.
-     * Requisitos:
+     * Conexion simple al servidor - enviar mensaje.
+     * Requisitos del servidor:
      * [Dovecot] or [Sendmail]
      */
     private void test_cliente_02() {
         try {
-            Socket cli = new Socket(this.getHOST(), this.getPUERTO());
+            Socket cli = new Socket(this.getHOST(), this.getPORT());
             BufferedReader entrada = new BufferedReader(new InputStreamReader(cli.getInputStream()));
             DataOutputStream salida = new DataOutputStream (cli.getOutputStream());
             
             // #Primer contacto.
-            System.err.println("[C]Conectando ..."+this.getHOST()+":"+this.getPUERTO());
             System.out.println("[S]"+entrada.readLine());
             TimeUnit.SECONDS.sleep(1);
             
@@ -106,7 +104,6 @@ public class ClienteSMTP {
             TimeUnit.SECONDS.sleep(1);
             
             // #Asignar el correo emisor del mensaje.
-            //this.setCMD("mail from: "+"eyver.evm@gmail.com"+"\r\n");
             this.setCMD("mail from:"+" "+this.getFROM()+"\r\n");
             salida.writeBytes(this.getCMD());
             System.out.println("[S]"+entrada.readLine());
@@ -125,16 +122,16 @@ public class ClienteSMTP {
             TimeUnit.SECONDS.sleep(1);
             
             // #Asignar el asunto del mensaje.
-            this.setCMD("subject: Descolonización imperialista. \r\n");
+            this.setCMD("subject: Descolonización imperialista.\r\n");
             System.out.println(this.getCMD());
             salida.writeBytes(this.getCMD());
             TimeUnit.SECONDS.sleep(1);
             
             // #Asignar el mensaje del mensaje.
             this.setCMD(
-                    "Este servidor imperialista, ahora esta descolonizado"+"\r\n"+
+                    "Este servidor imperialista, ahora esta descolonizado\r\n"+
                     "Cuerran PITITAS, cuerran.\r\n"+
-                    "Propiedad de los AYLLUS Y MAMANIS - INC."+"\r\n"
+                    "Propiedad de los AYLLUS Y MAMANIS - INC.\r\n"
                 );
             System.out.println(this.getCMD());
             salida.writeBytes(this.getCMD());
@@ -160,17 +157,16 @@ public class ClienteSMTP {
     }
     
     /**
-     * Conexión simple, enviar mensaje, subject custom.
+     * Conexión simple - enviar mensaje - subject custom.
      * @param subject 
      */
     private void test_cliente_03(String subject) {
         try {
-            Socket cli = new Socket(this.getHOST(), this.getPUERTO());
+            Socket cli = new Socket(this.getHOST(), this.getPORT());
             BufferedReader entrada = new BufferedReader(new InputStreamReader(cli.getInputStream()));
             DataOutputStream salida = new DataOutputStream (cli.getOutputStream());
             
             // #Primer contacto.
-            System.err.println("[C]Conectando ..."+this.getHOST()+":"+this.getPUERTO());
             System.out.println("[S]"+entrada.readLine());
             TimeUnit.SECONDS.sleep(1);
             
@@ -181,7 +177,6 @@ public class ClienteSMTP {
             TimeUnit.SECONDS.sleep(1);
             
             // #Asignar el correo emisor del mensaje.
-            //this.setCMD("mail from: "+"eyver.evm@gmail.com"+"\r\n");
             this.setCMD("mail from:"+" "+this.getFROM()+"\r\n");
             salida.writeBytes(this.getCMD());
             System.out.println("[S]"+entrada.readLine());
@@ -239,16 +234,20 @@ public class ClienteSMTP {
         /* local */
 //        ClienteSMTP cli = new ClienteSMTP("127.0.0.1", 25);
         
-        /* tecno */
-//        ClienteSMTP cli = new ClienteSMTP("www.tecnoweb.org.bo", 25,
-//                "minpres@presidencia.gob.bo",
-//                "grupo01sa@tecnoweb.org.bo");
-        
-        /* fedSe */
-        ClienteSMTP cli = new ClienteSMTP("192.168.1.2", 25,
+        /* Tecno */
+        ClienteSMTP cli = new ClienteSMTP("www.tecnoweb.org.bo", 25,
                 "minpres@presidencia.gob.bo",
-                "freyja@freyja.wiki.bo");
+                "grupo01sa@tecnoweb.org.bo");
+        
+        /* fedora Server */
+//        ClienteSMTP cli = new ClienteSMTP("192.168.1.2", 25,
+//                "minpres@presidencia.gob.bo",
+//                "freyja@freyja.wiki.bo");
 
+
+        // #Saludo.
+        System.out.println("SMTP : Conectando : "+cli.getHOST()+":"+cli.getPORT());
+        
         // #Conexion simple.
         cli.test_cliente_01();
         

@@ -21,20 +21,20 @@ public class ClienteBD {
     private Connection CNX;
 
     public ClienteBD() {
-        this.HOST = "localhost";
-        this.PORT = "5432";
-        this.BD = "db_agenda";
-        this.TBL = "amigo";
-        this.NAV = new Properties();
-        this.CNX = null;
+        this.HOST   = "localhost";
+        this.PORT   = "5432";
+        this.BD     = "db_agenda";
+        this.TBL    = "amigo";
+        this.NAV    = new Properties();
+        this.CNX    = null;
     }
     public ClienteBD(String HOST, String PORT, String BD, String TBL) {
-        this.HOST = HOST;
-        this.PORT = PORT;
-        this.BD = BD;
-        this.TBL = TBL;
-        this.NAV = new Properties();
-        this.CNX = null;
+        this.HOST   = HOST;
+        this.PORT   = PORT;
+        this.BD     = BD;
+        this.TBL    = TBL;
+        this.NAV    = new Properties();
+        this.CNX    = null;
     }
     
     public String getHOST() {
@@ -96,10 +96,12 @@ public class ClienteBD {
      * Ingresar las credenciales de la cuenta BD.
      */
     private void signIN() {
+        System.err.println("BD : Conectando : "+this.getHOST()+":"+this.getPORT());
+        
         Scanner input = new Scanner(System.in);
-        System.out.print("[BD :: USR] ");
+        System.err.print("[BD :: USR] ");
         this.setUSR(input.nextLine());
-        System.out.print("[BD :: PWD] ");
+        System.err.print("[BD :: PWD] ");
         this.setPWD(input.nextLine());
     }
     
@@ -161,15 +163,21 @@ public class ClienteBD {
     
     public static void main(String[] args) {
         /* Servidor local  */
-        ClienteBD cli = new ClienteBD();
+//        ClienteBD cli = new ClienteBD();
         
         /* Servidor freyja */
 //        ClienteBD cli = new ClienteBD("192.168.1.9", "5432", 
 //                "db_agenda", "amigo");
         
+        /* Servidor windows */
+        ClienteBD cli = new ClienteBD("localhost", "5432", 
+                "db_agenda", "amigo");
+        
         /* Servidor tecno  */
 //        ClienteBD cli = new ClienteBD("www.tecnoweb.org.bo", "5432",
 //                "db_agenda", "amigo");
+        
+        
         
         cli.signIN();
         cli.conectar();
