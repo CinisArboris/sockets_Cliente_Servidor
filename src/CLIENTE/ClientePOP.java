@@ -304,9 +304,10 @@ public class ClientePOP {
     }
 
     /**
-     * 
+     * Obtener y mostrar el último mensaje de la bandeja.
      */
     private void test_cliente_03() {
+        
         try {
             this.conectar();
             
@@ -314,50 +315,51 @@ public class ClientePOP {
             System.out.print("[S]"+this.getENTRADA().readLine());
             TimeUnit.SECONDS.sleep(1);
             
+            // #set usuario al servidor.
+            System.out.println("USER ******");
+            this.setCMD("USER"+" "+this.getUSR()+"\r\n");
+            this.getSALIDA().writeBytes(this.getCMD());
+            System.out.println("[S]"+this.getENTRADA().readLine());
+            TimeUnit.SECONDS.sleep(1);
             
-//            // #set usuario al servidor.
-//            System.out.println("USER ******");
-//            this.setCMD("USER"+" "+this.getUSR()+"\r\n");
-//            salida.writeBytes(this.getCMD());
-//            System.out.println("[S]"+ENTRADA.readLine());
-//            TimeUnit.SECONDS.sleep(1);
+            // #set password al servidor.
+            System.out.println("PASS ******");
+            this.setCMD("PASS"+" "+this.getPWD()+"\r\n");
+            this.getSALIDA().writeBytes(this.getCMD());
+            System.out.println("[S]"+this.getENTRADA().readLine());
+            TimeUnit.SECONDS.sleep(1);
             
-//            // #set password al servidor.
-//            System.out.println("PASS ******");
-//            this.setCMD("PASS"+" "+this.getPWD()+"\r\n");
-//            salida.writeBytes(this.getCMD());
-//            System.out.println("[S]"+ENTRADA.readLine());
-//            TimeUnit.SECONDS.sleep(1);
-//            
-//            // #get estadisticas del correo.
-//            System.out.println("STAT");
-//            this.setCMD("STAT"+"\r\n");
-//            salida.writeBytes(this.getCMD());
-//            System.out.println("[S]"+ENTRADA.readLine());
-//            TimeUnit.SECONDS.sleep(1);
-//            
-//            // #get estadisticas del correo.
-//            System.out.println("LIST");
-//            this.setCMD("LIST"+"\r\n");
-//            salida.writeBytes(this.getCMD());
-//            String lineas = this.getMultiLine(ENTRADA);
-////            System.out.println("[S]"+lineas);
-//            this.getLastSMS(lineas);
-//            TimeUnit.SECONDS.sleep(1);
-//            
-//            // #Fin del mensaje.
-//            this.setCMD("quit"+"\r\n");
-//            salida.writeBytes(this.getCMD());
-//            System.out.println("[S]"+ENTRADA.readLine());
-//            TimeUnit.SECONDS.sleep(1);
+            // #get estadisticas del correo.
+            System.out.println("STAT");
+            this.setCMD("STAT"+"\r\n");
+            this.getSALIDA().writeBytes(this.getCMD());
+            System.out.println("[S]"+this.getENTRADA().readLine());
+            TimeUnit.SECONDS.sleep(1);
             
+            // #get estadisticas del correo.
+            System.out.println("LIST");
+            this.setCMD("LIST"+"\r\n");
+            this.getSALIDA().writeBytes(this.getCMD());
+            String lineas = this.getMultiLine(this.getENTRADA());
+            this.getLastSMS(lineas);
+            TimeUnit.SECONDS.sleep(1);
+
+            // #get mensaje del correo.
+            System.out.println("RETR "+this.getSMS());
+            this.setCMD("RETR"+" "+this.getSMS()+"\r\n");
+            this.getSALIDA().writeBytes(this.getCMD());
+            System.out.println("[S]"+this.getMultiLine(this.getENTRADA()));
+            TimeUnit.SECONDS.sleep(1);
+
+            // #Fin del mensaje.
+            this.setCMD("quit"+"\r\n");
+            this.getSALIDA().writeBytes(this.getCMD());
+            System.out.println("[S]"+this.getENTRADA().readLine());
+            TimeUnit.SECONDS.sleep(1);
+
             this.desconectar();
-        } catch (IOException ex) {
-            Logger.getLogger(ClienteSMTP.class.getName()).log(Level.SEVERE, null, ex);
-            System.err.println("[System]ERROR 404");
-        } catch (InterruptedException ex) {
-            Logger.getLogger(ClienteSMTP.class.getName()).log(Level.SEVERE, null, ex);
-            System.err.println("[System]ERROR SLEEP");
+        } catch (IOException | InterruptedException ex) {
+            Logger.getLogger(ClientePOP.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
 
