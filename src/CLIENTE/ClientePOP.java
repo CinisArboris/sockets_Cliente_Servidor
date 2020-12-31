@@ -12,12 +12,19 @@ import java.util.logging.Logger;
  * @author eyver-dev
  */
 public class ClientePOP {
+    // Variables de Servidor.
     private String HOST;
     private int PORT;
+    // Variables de Sesión.
     private String USR;
     private String PWD;
+    // Variables de Comunicación.
     private String CMD;
     private String SMS;
+    // Variables del System.
+    private Socket SOK;
+    private BufferedReader ENTRADA;
+    private DataOutputStream SALIDA;
 
     public ClientePOP() {
         this.HOST = "www.tecnoweb.org.bo";
@@ -64,6 +71,40 @@ public class ClientePOP {
     public void setSMS(String SMS) {
         this.SMS = SMS;
     }
+
+    public Socket getSOK() {
+        return SOK;
+    }
+    public void setSOK(String host, int port) {
+        try {
+            this.SOK = new Socket(host, port);
+        } catch (IOException ex) {
+            //Logger.getLogger(ClientePOP.class.getName()).log(Level.SEVERE, null, ex);
+            System.out.println("[setSOK] - Error creando el SOCKET.");
+        }
+    }
+
+    public BufferedReader getENTRADA() {
+        return ENTRADA;
+    }
+    public void setENTRADA(BufferedReader ENTRADA) {
+        this.ENTRADA = ENTRADA;
+    }
+
+    public DataOutputStream getSALIDA() {
+        return SALIDA;
+    }
+
+    public void setSALIDA(DataOutputStream SALIDA) {
+        this.SALIDA = SALIDA;
+    }
+    
+
+    
+    
+    
+    
+    
     
     /**
      * Recopila multiples lineas de la respuesta del servidor.
@@ -109,7 +150,7 @@ public class ClientePOP {
     }
     
     /**
-     * Guarda el ultimo mensaje en la bandeja.
+     * Guarda el ultimo mensaje de la bandeja.
      * @param entrada 
      */
     private void getLastSMS(String entrada) {
@@ -121,7 +162,7 @@ public class ClientePOP {
     }
     
     /**
-     * Conexión al servidior - Listar buzon - Guardar el último mensaje.
+     * Conexión al servidior - Listar buzon - Guardar el código último mensaje.
      */
     private void test_cliente_01() {
         try {
@@ -249,17 +290,107 @@ public class ClientePOP {
         /* tecno  */
         ClientePOP cli = new ClientePOP();//B
         
-        System.err.println("[Conexión] ::"+cli.getHOST());
-        
         // #Cargar credenciales.
         cli.signIN();
         
         // #Listar mensajes y obtener el ultimo.
-        cli.test_cliente_01();
+//        cli.test_cliente_01();
         
         // #Obtener mensaje.
-        cli.test_cliente_02();
+//        cli.test_cliente_02();
+        
+        // #Conexión servidor POP modular.
+        cli.test_cliente_03();
     }
+
+    /**
+     * 
+     */
+    private void test_cliente_03() {
+        try {
+            this.conectar();
+            
+            // #Primer contacto.
+            System.out.print("[S]"+this.getENTRADA().readLine());
+            TimeUnit.SECONDS.sleep(1);
+            
+            
+//            // #set usuario al servidor.
+//            System.out.println("USER ******");
+//            this.setCMD("USER"+" "+this.getUSR()+"\r\n");
+//            salida.writeBytes(this.getCMD());
+//            System.out.println("[S]"+ENTRADA.readLine());
+//            TimeUnit.SECONDS.sleep(1);
+            
+//            // #set password al servidor.
+//            System.out.println("PASS ******");
+//            this.setCMD("PASS"+" "+this.getPWD()+"\r\n");
+//            salida.writeBytes(this.getCMD());
+//            System.out.println("[S]"+ENTRADA.readLine());
+//            TimeUnit.SECONDS.sleep(1);
+//            
+//            // #get estadisticas del correo.
+//            System.out.println("STAT");
+//            this.setCMD("STAT"+"\r\n");
+//            salida.writeBytes(this.getCMD());
+//            System.out.println("[S]"+ENTRADA.readLine());
+//            TimeUnit.SECONDS.sleep(1);
+//            
+//            // #get estadisticas del correo.
+//            System.out.println("LIST");
+//            this.setCMD("LIST"+"\r\n");
+//            salida.writeBytes(this.getCMD());
+//            String lineas = this.getMultiLine(ENTRADA);
+////            System.out.println("[S]"+lineas);
+//            this.getLastSMS(lineas);
+//            TimeUnit.SECONDS.sleep(1);
+//            
+//            // #Fin del mensaje.
+//            this.setCMD("quit"+"\r\n");
+//            salida.writeBytes(this.getCMD());
+//            System.out.println("[S]"+ENTRADA.readLine());
+//            TimeUnit.SECONDS.sleep(1);
+            
+            this.desconectar();
+        } catch (IOException ex) {
+            Logger.getLogger(ClienteSMTP.class.getName()).log(Level.SEVERE, null, ex);
+            System.err.println("[System]ERROR 404");
+        } catch (InterruptedException ex) {
+            Logger.getLogger(ClienteSMTP.class.getName()).log(Level.SEVERE, null, ex);
+            System.err.println("[System]ERROR SLEEP");
+        }
+    }
+
+    /**
+     * 
+     */
+    private void conectar() {
+        try {
+            this.setSOK(this.getHOST(), this.getPORT());
+            this.setENTRADA(new BufferedReader(new InputStreamReader(this.getSOK().getInputStream())));
+            this.setSALIDA(new DataOutputStream (this.getSOK().getOutputStream()));
+        } catch (IOException ex) {
+            Logger.getLogger(ClientePOP.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
+
+    
+    /**
+     * 
+     */
+    private void desconectar() {
+        try {
+            System.err.println("[C]Cerrando sesión.");
+            this.getSOK().close();
+            this.getENTRADA().close();
+            this.getSALIDA().close();
+            TimeUnit.SECONDS.sleep(2);
+        } catch (IOException | InterruptedException ex) {
+            Logger.getLogger(ClientePOP.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
+
+    
 
     
 }
