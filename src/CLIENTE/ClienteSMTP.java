@@ -161,6 +161,8 @@ public class ClienteSMTP {
      * @param subject 
      */
     private void test_cliente_03(String subject) {
+        this.validarSUBJECT(subject);
+        System.exit(0);
         try {
             Socket cli = new Socket(this.getHOST(), this.getPORT());
             BufferedReader entrada = new BufferedReader(new InputStreamReader(cli.getInputStream()));
@@ -249,12 +251,72 @@ public class ClienteSMTP {
         System.out.println("SMTP : Conectando : "+cli.getHOST()+":"+cli.getPORT());
         
         // #Conexion simple.
-        cli.test_cliente_01();
+        //cli.test_cliente_01();
         
         // #Conexion simple enviar mensaje.
-        cli.test_cliente_02();
+        //cli.test_cliente_02();
         
         // #Conexion simple, enviar mensaje personalizado.
-        cli.test_cliente_03("er");
+        cli.test_cliente_03("asdf1234 {}");
+    }
+
+    /**
+     * Verificar que el [subject] es una cadena/comando válido.
+     * Posee métodos intermedios.
+     * @param subject 
+     */
+    private void validarSUBJECT(String subject) {
+        boolean flag;
+        
+        flag = this.verificar_MIN_MAY(subject);
+        if (flag)
+            System.out.println("ERROR : != letras");
+        
+        flag = this.verificar_NUMERO(subject);
+        if (flag)
+            System.out.println("ERROR : != numero");
+    }
+
+    /**
+     * Verificar que los elementos de la cadena son [letras] MAY/MIN.
+     * Letras : a...z - A...Z
+     * @param subject
+     * @return
+     */
+    private boolean verificar_MIN_MAY(String subject) {
+        byte minMIN = (byte)((char)'a');//097
+        byte minMAX = (byte)((char)'z');//122
+        byte mayMIN = (byte)((char)'A');//065
+        byte mayMAX = (byte)((char)'Z');//090
+        for (int i = 0; i < subject.length(); i++){
+            if (((subject.charAt(i) < minMIN) && (subject.charAt(i) > minMAX))
+                ||
+                ((subject.charAt(i) < mayMIN) && (subject.charAt(i) > mayMAX))
+            )
+                return false;
+        }
+//        System.out.println(minMIN);
+//        System.out.println(minMAX);
+//        System.out.println(mayMIN);
+//        System.out.println(mayMAX);
+        return true;
+    }
+
+    /**
+     * Verificar que los elementos de la cadena son [números].
+     * Números : 0...9
+     * @param subject
+     * @return 
+     */
+    private boolean verificar_NUMERO(String subject) {
+        byte numMIN = (byte)((char)'0');//048
+        byte numMAX = (byte)((char)'9');//057
+        for (int i = 0; i < subject.length(); i++){
+            if ((subject.charAt(i) < numMIN) && (subject.charAt(i) > numMAX))
+                return false;
+        }
+//        System.out.println(numMIN);
+//        System.out.println(numMAX);
+        return true;
     }
 }
