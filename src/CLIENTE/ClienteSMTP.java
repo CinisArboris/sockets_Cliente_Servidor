@@ -2,6 +2,8 @@ package CLIENTE;
 
 import java.io.*;
 import java.net.*;
+import java.sql.Array;
+import java.util.LinkedList;
 import java.util.concurrent.TimeUnit;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -16,22 +18,26 @@ public class ClienteSMTP {
     private String CMD;
     private String FROM;
     private String TO;
+    private LinkedList COD;
 
     public ClienteSMTP() {
         this.HOST   = "www.tecnoweb.org.bo";
         this.PORT   = 25;
         this.FROM   = "minpres@presidencia.gob.bo";
         this.TO     = "grupo01sa@tecnoweb.org.bo";
+        this.cargarCOD();
     }
     public ClienteSMTP(String HOST, int PUERTO) {
         this.HOST = HOST;
         this.PORT = PUERTO;
+        this.cargarCOD();
     }
     public ClienteSMTP(String HOST, int PUERTO, String FROM, String TO) {
         this.HOST = HOST;
         this.PORT = PUERTO;
         this.FROM = FROM;
         this.TO = TO;
+        this.cargarCOD();
     }
 
     public String getHOST() {
@@ -64,6 +70,13 @@ public class ClienteSMTP {
     public void setTO(String TO) {
         this.TO = TO;
     }
+    public LinkedList getCOD() {
+        return COD;
+    }
+    public void setCOD(String COD) {
+        this.COD.add(COD);
+    }
+
     
     /**
      * Conexión simple al servidor.
@@ -318,5 +331,13 @@ public class ClienteSMTP {
 //        System.out.println(numMIN);
 //        System.out.println(numMAX);
         return true;
+    }
+
+    private void cargarCOD() {
+        this.setCOD("listar");
+        this.setCOD("crear");
+        this.setCOD("mostrar");
+        this.setCOD("actualizar");
+        this.setCOD("borrar");
     }
 }
