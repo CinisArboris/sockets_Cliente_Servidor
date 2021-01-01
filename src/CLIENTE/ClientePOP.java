@@ -35,46 +35,102 @@ public class ClientePOP {
         this.PORT = PORT;
     }
 
+    /**
+     * Obtener el [dominio/ip] del servidor.
+     * @return 
+     */
     public String getHOST() {
         return HOST;
     }
+    /**
+     * Establecer el [dominio/ip] del servidor.
+     * @param HOST 
+     */
     public void setHOST(String HOST) {
         this.HOST = HOST;
     }
+    /**
+     * Obtener el [puerto] del servidor.
+     * @return 
+     */
     public int getPORT() {
         return PORT;
     }
+    /**
+     * Establecer el [puerto] del servidor.
+     * @param PORT 
+     */
     public void setPORT(int PORT) {
         this.PORT = PORT;
     }
+    /**
+     * Obtener el [usuario] de la cuenta en el servidor.
+     * @return 
+     */
     public String getUSR() {
         return USR;
     }
+    /**
+     * * Establecer el [usuario] de la cuenta en el servidor.
+     * @param USR 
+     */
     public void setUSR(String USR) {
         this.USR = USR;
     }
+    /**
+     * Obtener el [password] de la cuenta en el servidor.
+     * @return 
+     */
     public String getPWD() {
         return PWD;
     }
+    /**
+     * Establecer el [password] de la cuenta en el servidor.
+     * @param PWD 
+     */
     public void setPWD(String PWD) {
         this.PWD = PWD;
     }
+    /**
+     * Obtener el [comando] que ejecutara el servidor.
+     * @return 
+     */
     public String getCMD() {
         return CMD;
     }
+    /**
+     * Establecer el [comando] que ejecutara el servidor.
+     * @param CMD 
+     */
     public void setCMD(String CMD) {
         this.CMD = CMD;
     }
+    /**
+     * Obtener el número del [mensaje] guardado que esta en el servidor.
+     * @return 
+     */
     public String getSMS() {
         return SMS;
     }
+    /**
+     * Establecer el número del [mensaje] guardado que esta en el servidor.
+     * @param SMS 
+     */
     public void setSMS(String SMS) {
         this.SMS = SMS;
     }
-
+    /**
+     * Obtener el objeto [socket] para crear las conexiones con el servidor.
+     * @return 
+     */
     public Socket getSOK() {
         return SOK;
     }
+    /**
+     * Establecer los parametros necesarios, para crear las conexiones con el servidor.
+     * @param host
+     * @param port 
+     */
     public void setSOK(String host, int port) {
         try {
             this.SOK = new Socket(host, port);
@@ -83,29 +139,57 @@ public class ClientePOP {
             System.out.println("[setSOK] - Error creando el SOCKET.");
         }
     }
-
     public BufferedReader getENTRADA() {
         return ENTRADA;
     }
     public void setENTRADA(BufferedReader ENTRADA) {
         this.ENTRADA = ENTRADA;
     }
-
     public DataOutputStream getSALIDA() {
         return SALIDA;
     }
-
     public void setSALIDA(DataOutputStream SALIDA) {
         this.SALIDA = SALIDA;
     }
-    
-
-    
-    
-    
-    
-    
-    
+//       :     
+//      t#,    
+//     ;##W.   
+//    :#L:WE   
+//   .KG  ,#D  
+//   EE    ;#f 
+//  f#.     t#i
+//  :#G     GK 
+//   ;#L   LW. 
+//    t#f f#:  
+//     f#D#;   
+//      G#t    
+//       t
+    /**
+     * Iniciar los medios de comunicación con el servidor.
+     */
+    private void conectar() {
+        try {
+            this.setSOK(this.getHOST(), this.getPORT());
+            this.setENTRADA(new BufferedReader(new InputStreamReader(this.getSOK().getInputStream())));
+            this.setSALIDA(new DataOutputStream (this.getSOK().getOutputStream()));
+        } catch (IOException ex) {
+            Logger.getLogger(ClientePOP.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
+    /**
+     * Cerrar los medios de comunicación con el servidor.
+     */
+    private void desconectar() {
+        try {
+            System.err.println("[C]Cerrando sesión.");
+            this.getSOK().close();
+            this.getENTRADA().close();
+            this.getSALIDA().close();
+            TimeUnit.SECONDS.sleep(2);
+        } catch (IOException | InterruptedException ex) {
+            Logger.getLogger(ClientePOP.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
     /**
      * Recopila multiples lineas de la respuesta del servidor.
      * @param entrada
@@ -279,30 +363,7 @@ public class ClientePOP {
         }
     }
 
-    public static void main(String[] args) {
-        // #Inicializacion de los [CLIENTES].
-        /* local  */
-        //ClientePOP cli = new ClientePOP("127.0.0.1", 110);
-        
-        /* freyja */
-        //ClientePOP cli = new ClientePOP("192.168.1.2", 110);
-        
-        /* tecno  */
-        ClientePOP cli = new ClientePOP();//B
-        
-        // #Cargar credenciales.
-        cli.signIN();
-        
-        // #Listar mensajes y obtener el ultimo.
-//        cli.test_cliente_01();
-        
-        // #Obtener mensaje.
-//        cli.test_cliente_02();
-        
-        // #Conexión servidor POP modular.
-        cli.test_cliente_03();
-    }
-
+    
     /**
      * Obtener y mostrar el último mensaje de la bandeja.
      */
@@ -363,36 +424,29 @@ public class ClientePOP {
         }
     }
 
-    /**
-     * 
-     */
-    private void conectar() {
-        try {
-            this.setSOK(this.getHOST(), this.getPORT());
-            this.setENTRADA(new BufferedReader(new InputStreamReader(this.getSOK().getInputStream())));
-            this.setSALIDA(new DataOutputStream (this.getSOK().getOutputStream()));
-        } catch (IOException ex) {
-            Logger.getLogger(ClientePOP.class.getName()).log(Level.SEVERE, null, ex);
-        }
+    
+
+    public static void main(String[] args) {
+        // #Inicializacion de los [CLIENTES].
+        /* local  */
+        //ClientePOP cli = new ClientePOP("127.0.0.1", 110);
+        
+        /* freyja */
+        //ClientePOP cli = new ClientePOP("192.168.1.2", 110);
+        
+        /* tecno  */
+        ClientePOP cli = new ClientePOP();//B
+        
+        // #Cargar credenciales.
+        cli.signIN();
+        
+        // #Listar mensajes y obtener el ultimo.
+//        cli.test_cliente_01();
+        
+        // #Obtener mensaje.
+//        cli.test_cliente_02();
+        
+        // #Conexión servidor POP modular.
+        cli.test_cliente_03();
     }
-
-    
-    /**
-     * 
-     */
-    private void desconectar() {
-        try {
-            System.err.println("[C]Cerrando sesión.");
-            this.getSOK().close();
-            this.getENTRADA().close();
-            this.getSALIDA().close();
-            TimeUnit.SECONDS.sleep(2);
-        } catch (IOException | InterruptedException ex) {
-            Logger.getLogger(ClientePOP.class.getName()).log(Level.SEVERE, null, ex);
-        }
-    }
-
-    
-
-    
 }

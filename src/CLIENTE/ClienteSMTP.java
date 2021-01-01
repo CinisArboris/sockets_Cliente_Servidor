@@ -280,7 +280,12 @@ public class ClienteSMTP {
      */
     private void validarSUBJECT(String subject) {
         boolean flag;
+        String sepComPar, sepPal, cadComando, cadParamet = "";
         
+        sepComPar = "{}";
+        sepPal = " ";
+        
+        // Iniciando validaciones.
         flag = this.verificar_MIN_MAY(subject);
         if (flag)
             System.out.println("ERROR : != letras");
@@ -333,6 +338,9 @@ public class ClienteSMTP {
         return true;
     }
 
+    /**
+     * Cargar los codigos validos en el sistema [default].
+     */
     private void cargarCOD() {
         this.setCOD("listar");
         this.setCOD("crear");
