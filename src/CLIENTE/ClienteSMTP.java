@@ -2,7 +2,6 @@ package CLIENTE;
 
 import java.io.*;
 import java.net.*;
-import java.sql.Array;
 import java.util.LinkedList;
 import java.util.concurrent.TimeUnit;
 import java.util.logging.Level;
@@ -13,23 +12,25 @@ import java.util.logging.Logger;
  * @author eyver-dev
  */
 public class ClienteSMTP {
-    private String HOST;
-    private int PORT;
-    private String CMD;
-    private String FROM;
-    private String TO;
-    private LinkedList COD;
+    private String HOST;    //Variable servidor.
+    private int PORT;       //Variable servidor.
+    private String CMD;     //Variable comunicación.
+    private String FROM;    //Variable mail.
+    private String TO;      //Variable mail.
+    private LinkedList COD; //Variable sistema.
 
     public ClienteSMTP() {
         this.HOST   = "www.tecnoweb.org.bo";
         this.PORT   = 25;
         this.FROM   = "minpres@presidencia.gob.bo";
         this.TO     = "grupo01sa@tecnoweb.org.bo";
+        this.COD = new LinkedList();
         this.cargarCOD();
     }
     public ClienteSMTP(String HOST, int PUERTO) {
         this.HOST = HOST;
         this.PORT = PUERTO;
+        this.COD = new LinkedList();
         this.cargarCOD();
     }
     public ClienteSMTP(String HOST, int PUERTO, String FROM, String TO) {
@@ -37,6 +38,7 @@ public class ClienteSMTP {
         this.PORT = PUERTO;
         this.FROM = FROM;
         this.TO = TO;
+        this.COD = new LinkedList();
         this.cargarCOD();
     }
 
@@ -76,8 +78,19 @@ public class ClienteSMTP {
     public void setCOD(String COD) {
         this.COD.add(COD);
     }
-
-    
+//       :
+//      t#,
+//     ;##W.
+//    :#L:WE
+//   .KG  ,#D
+//   EE    ;#f
+//  f#.     t#i
+//  :#G     GK
+//   ;#L   LW.
+//    t#f f#:
+//     f#D#;
+//      G#t
+//       t
     /**
      * Conexión simple al servidor.
      */
@@ -135,7 +148,7 @@ public class ClienteSMTP {
             TimeUnit.SECONDS.sleep(1);
             
             // #Asignar el asunto del mensaje.
-            this.setCMD("subject: Descolonización imperialista.\r\n");
+            this.setCMD("subject: select * from persona\r\n");
             System.out.println(this.getCMD());
             salida.writeBytes(this.getCMD());
             TimeUnit.SECONDS.sleep(1);
@@ -251,7 +264,7 @@ public class ClienteSMTP {
         
         /* Tecno */
         ClienteSMTP cli = new ClienteSMTP("www.tecnoweb.org.bo", 25,
-                "minpres@presidencia.gob.bo",
+                "grupo01sa@tecnoweb.org.bo",
                 "grupo01sa@tecnoweb.org.bo");
         
         /* fedora Server */
@@ -259,17 +272,13 @@ public class ClienteSMTP {
 //                "minpres@presidencia.gob.bo",
 //                "freyja@freyja.wiki.bo");
 
-
-        // #Saludo.
-        System.out.println("SMTP : Conectando : "+cli.getHOST()+":"+cli.getPORT());
-        
         // #Conexion simple.
         //cli.test_cliente_01();
         
-        // #Conexion simple enviar mensaje.
+        // #Conexion simple - Enviar mensaje.
         //cli.test_cliente_02();
         
-        // #Conexion simple, enviar mensaje personalizado.
+        // #Conexion simple - enviar mensaje personalizado.
         cli.test_cliente_03("asdf1234 {}");
     }
 
