@@ -12,18 +12,17 @@ import java.util.logging.Logger;
  * @author eyver-dev
  */
 public class ClienteSMTP {
-    private String HOST;    //Variable servidor.
-    private int PORT;       //Variable servidor.
-    private String CMD;     //Variable comunicación.
-    private String FROM;    //Variable mail.
-    private String TO;      //Variable mail.
-    private LinkedList COD; //Variable sistema.
+    private String HOST;            //Variable de servidor.
+    private int PORT;               //Variable de servidor.
+    private String CMD;             //Variable de comunicación.
+    private String FROM;            //Variable de mail.
+    private String TO;              //Variable de mail.
+    private LinkedList COD;         // Variables de System.
+    private Socket SOK;             // Variables de System.
+    private BufferedReader ENTRADA; // Variables de System.
+    private DataOutputStream SALIDA; // Variables de System.
 
     public ClienteSMTP() {
-        this.HOST   = "www.tecnoweb.org.bo";
-        this.PORT   = 25;
-        this.FROM   = "minpres@presidencia.gob.bo";
-        this.TO     = "grupo01sa@tecnoweb.org.bo";
         this.COD = new LinkedList();
         this.cargarCOD();
     }
@@ -78,6 +77,34 @@ public class ClienteSMTP {
     public void setCOD(String COD) {
         this.COD.add(COD);
     }
+    public Socket getSOK() {
+        return SOK;
+    }
+    public boolean setSOK(String host, int port) {
+        boolean bandera;
+        try {
+            this.SOK = new Socket(host, port);
+            bandera = true;
+        } catch (IOException ex) {
+            //Logger.getLogger(ClienteSMTP.class.getName()).log(Level.SEVERE, null, ex);
+            System.err.println("[System] - setSOK");
+            bandera = false;
+        }
+        return bandera;
+    }
+    public BufferedReader getENTRADA() {
+        return ENTRADA;
+    }
+    public void setENTRADA(BufferedReader ENTRADA) {
+        this.ENTRADA = ENTRADA;
+    }
+    public DataOutputStream getSALIDA() {
+        return SALIDA;
+    }
+    public void setSALIDA(DataOutputStream SALIDA) {
+        this.SALIDA = SALIDA;
+    }
+    
 //       :
 //      t#,
 //     ;##W.
@@ -92,28 +119,131 @@ public class ClienteSMTP {
 //      G#t
 //       t
     /**
-     * Conexión simple al servidor.
+     * Cargar los codigos validos en el sistema [default].
      */
-    private void test_cliente_01() {
+    private void cargarCOD() {
+        this.setCOD("listar");
+        this.setCOD("crear");
+        this.setCOD("mostrar");
+        this.setCOD("actualizar");
+        this.setCOD("borrar");
+    }
+    
+    /**
+     * Estableciendo la conexión con el servidor.
+     * @return 
+     */
+    private boolean conectar() {
+        boolean bandera;
+        bandera = this.setSOK(this.getHOST(), this.getPORT());
+        if (!bandera) return bandera;
+        return true;
+    }
+    
+    /**
+     * 
+     * @return 
+     */
+    private boolean establecer_FLUJO_COMUNICACION() {
+        boolean bandera;
+        try {
+            InputStream vara = this.getSOK().getInputStream();
+            InputStreamReader varb = new InputStreamReader(vara);
+            BufferedReader varc = new BufferedReader(varb);
+            this.setENTRADA(varc);
+            
+            OutputStream vard = this.getSOK().getOutputStream();
+            DataOutputStream vare = new DataOutputStream(vard);
+            this.setSALIDA(vare);
+            
+            bandera = true;
+        } catch (IOException ex) {
+            //Logger.getLogger(ClienteSMTP.class.getName()).log(Level.SEVERE, null, ex);
+            System.err.println("[System] - establecer_FLUJO_COMUNICACION");
+            bandera = false;
+        }
+        return bandera;
+    }
+    
+    /**
+     * 
+     */
+    private void desconectar() {
+        try {
+            this.getSOK().close();
+        } catch (IOException ex) {
+            Logger.getLogger(ClienteSMTP.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
+//       :
+//      t#,
+//     ;##W.
+//    :#L:WE
+//   .KG  ,#D
+//   EE    ;#f
+//  f#.     t#i
+//  :#G     GK
+//   ;#L   LW.
+//    t#f f#:
+//     f#D#;
+//      G#t
+//       t
+    /**
+     * Conexión servidor SMTP.
+     * Código: Secuencial.
+     */
+    private void test_cliente_01_e() {
+        String tmp;
+        boolean bandera;
         try {
             Socket cli = new Socket(this.getHOST(), this.getPORT());
             BufferedReader entrada = new BufferedReader(new InputStreamReader(cli.getInputStream()));
             
-            System.out.println("[S]"+entrada.readLine());
+            tmp = "\u001B[36m" + "[S]"+entrada.readLine();
+            System.out.println(tmp);
             
             cli.close();
         } catch (IOException ex) {
             //Logger.getLogger(ClienteSMTP.class.getName()).log(Level.SEVERE, null, ex);
-            System.err.println("[System]ERROR 404");
+            System.err.println("[System] - test_cliente_01_e");
         }
     }
     
     /**
-     * Conexion simple al servidor - enviar mensaje.
+     * Conexión servidor SMTP.
+     * Código: Modular.
+     * @return 
+     */
+    private boolean test_cliente_01_m() {
+        String tmp;
+        boolean bandera;
+        try {
+            bandera = this.conectar();
+            if (!bandera) return false;
+            
+            bandera = this.establecer_FLUJO_COMUNICACION();
+            if (!bandera) return false;
+            
+            tmp = "\u001B[36m" + "[S]"+ENTRADA.readLine();
+            System.out.println(tmp);
+            
+            this.desconectar();
+            bandera = true;
+        } catch (IOException ex) {
+            //Logger.getLogger(ClienteSMTP.class.getName()).log(Level.SEVERE, null, ex);
+            System.err.println("[System] - test_cliente_01_m");
+            bandera = false;
+        }
+        return bandera;
+    }
+    
+    /**
+     * Conexión servidor SMTP - enviar mensaje.
+     * Código: Secuencial.
      * Requisitos del servidor:
      * [Dovecot] or [Sendmail]
      */
-    private void test_cliente_02() {
+    private void test_cliente_02_e() {
         try {
             Socket cli = new Socket(this.getHOST(), this.getPORT());
             BufferedReader entrada = new BufferedReader(new InputStreamReader(cli.getInputStream()));
@@ -179,6 +309,85 @@ public class ClienteSMTP {
         } catch (InterruptedException ex) {
             Logger.getLogger(ClienteSMTP.class.getName()).log(Level.SEVERE, null, ex);
             System.err.println("[System]ERROR SLEEP");
+        }
+    }
+    
+    /**
+     * Conexión servidor SMTP - enviar mensaje.
+     * Código: Modular.
+     * Requisitos del servidor:
+     * [Dovecot] or [Sendmail]
+     */
+    private void test_cliente_02_m() {
+        String tmp;
+        try {
+            Socket cli = new Socket(this.getHOST(), this.getPORT());
+            BufferedReader entrada = new BufferedReader(new InputStreamReader(cli.getInputStream()));
+            DataOutputStream salida = new DataOutputStream (cli.getOutputStream());
+            
+            // #Primer contacto.
+            tmp = "\u001B[36m" + "[S]"+entrada.readLine();
+            System.out.println(tmp);
+            TimeUnit.SECONDS.sleep(1);
+            
+            // #Saludo al servidor.
+            this.setCMD("helo"+" "+this.getHOST()+"\r\n");
+            salida.writeBytes(this.getCMD());
+            tmp = "\u001B[36m" + "[S]"+entrada.readLine();
+            System.out.println(tmp);
+            TimeUnit.SECONDS.sleep(1);
+            
+            // #Asignar el correo emisor del mensaje.
+            this.setCMD("mail from:"+" "+this.getFROM()+"\r\n");
+            salida.writeBytes(this.getCMD());
+            tmp = "\u001B[36m" + "[S]"+entrada.readLine();
+            System.out.println(tmp);
+            TimeUnit.SECONDS.sleep(1);
+            
+            // #Asignar el correo destino del mensaje.
+            this.setCMD("rcpt to:"+" "+this.getTO()+"\r\n");
+            salida.writeBytes(this.getCMD());
+            tmp = "\u001B[36m" + "[S]"+entrada.readLine();
+            System.out.println(tmp);
+            TimeUnit.SECONDS.sleep(1);
+            
+            // #Asignar los datos del mensaje.
+            this.setCMD("data"+"\r\n");
+            salida.writeBytes(this.getCMD());
+            tmp = "\u001B[36m" + "[S]"+entrada.readLine();
+            System.out.println(tmp);
+            TimeUnit.SECONDS.sleep(1);
+            
+            // #Asignar el asunto del mensaje.
+            this.setCMD("subject: select * from persona\r\n");
+            System.out.println(this.getCMD());
+            salida.writeBytes(this.getCMD());
+            TimeUnit.SECONDS.sleep(1);
+            
+            // #Asignar el mensaje del mensaje.
+            this.setCMD(
+                    "Este servidor imperialista, ahora esta descolonizado\r\n"+
+                    "Cuerran PITITAS, cuerran.\r\n"+
+                    "Propiedad de los AYLLUS Y MAMANIS - INC.\r\n"
+                );
+            System.out.println(this.getCMD());
+            salida.writeBytes(this.getCMD());
+            TimeUnit.SECONDS.sleep(1);
+            
+            // #Fin del mensaje.
+            this.setCMD("."+"\r\n");
+            salida.writeBytes(this.getCMD());
+            tmp = "\u001B[36m" + "[S]"+entrada.readLine();
+            System.out.println(tmp);
+            TimeUnit.SECONDS.sleep(1);
+            
+            System.err.println("[C]Cerrando sesión.");
+            cli.close();
+            entrada.close();
+            salida.close();
+        } catch (IOException | InterruptedException ex) {
+            //Logger.getLogger(ClienteSMTP.class.getName()).log(Level.SEVERE, null, ex);
+            System.err.println("[System] - test_cliente_02_m");
         }
     }
     
@@ -256,32 +465,68 @@ public class ClienteSMTP {
             System.err.println("[System]ERROR SLEEP");
         }
     }
-    
+//       :
+//      t#,
+//     ;##W.
+//    :#L:WE
+//   .KG  ,#D
+//   EE    ;#f
+//  f#.     t#i
+//  :#G     GK
+//   ;#L   LW.
+//    t#f f#:
+//     f#D#;
+//      G#t
+//       t
     public static void main(String[] args) throws IOException {
-        // #Inicializacion de los [CLIENTES].
-        /* local */
-//        ClienteSMTP cli = new ClienteSMTP("127.0.0.1", 25);
+        int codigo;
+        ClienteSMTP cli;
+        boolean bandera;
         
-        /* Tecno */
-        ClienteSMTP cli = new ClienteSMTP("www.tecnoweb.org.bo", 25,
-                "grupo01sa@tecnoweb.org.bo",
-                "grupo01sa@tecnoweb.org.bo");
+        codigo = 3;
+        cli = null;
+        switch (codigo){
+            case 0 :
+                cli = new ClienteSMTP("127.0.0.1", 25);
+            case 1 :
+                cli = new ClienteSMTP("192.168.1.2", 25,
+                    "minpres@presidencia.gob.bo",
+                    "freyja@freyja.wiki.bo");
+            case 2 :
+                cli = new ClienteSMTP("www.tecnoweb.org.bo", 25,
+                    "grupo01sa@tecnoweb.org.bo",
+                    "grupo01sa@tecnoweb.org.bo");
+            case 3 :
+                cli = new ClienteSMTP("www.tecnoweb.org.bo", 25,
+                    "minpres@presidencia.gob.bo",
+                    "grupo01sa@tecnoweb.org.bo");
+        }
+        if (cli == null) return;
         
-        /* fedora Server */
-//        ClienteSMTP cli = new ClienteSMTP("192.168.1.2", 25,
-//                "minpres@presidencia.gob.bo",
-//                "freyja@freyja.wiki.bo");
-
         // #Conexion simple.
-        //cli.test_cliente_01();
+        //cli.test_cliente_01_e();
+        //bandera = cli.test_cliente_01_m();
+        
         
         // #Conexion simple - Enviar mensaje.
-        //cli.test_cliente_02();
+        cli.test_cliente_02_m();
         
         // #Conexion simple - enviar mensaje personalizado.
-        cli.test_cliente_03("asdf1234 {}");
+        //cli.test_cliente_03("asdf1234 {}");
     }
-
+//       :
+//      t#,
+//     ;##W.
+//    :#L:WE
+//   .KG  ,#D
+//   EE    ;#f
+//  f#.     t#i
+//  :#G     GK
+//   ;#L   LW.
+//    t#f f#:
+//     f#D#;
+//      G#t
+//       t
     /**
      * Verificar que el [subject] es una cadena/comando válido.
      * Posee métodos intermedios.
@@ -347,14 +592,5 @@ public class ClienteSMTP {
         return true;
     }
 
-    /**
-     * Cargar los codigos validos en el sistema [default].
-     */
-    private void cargarCOD() {
-        this.setCOD("listar");
-        this.setCOD("crear");
-        this.setCOD("mostrar");
-        this.setCOD("actualizar");
-        this.setCOD("borrar");
-    }
+    
 }
