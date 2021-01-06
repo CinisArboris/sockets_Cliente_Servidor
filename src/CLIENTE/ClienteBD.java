@@ -116,6 +116,7 @@ public class ClienteBD {
     
     /**
      * Iniciar la conexión a la BD.
+     * @return 
      */
     private boolean conectar() {
         boolean bandera;
@@ -150,9 +151,11 @@ public class ClienteBD {
     
     /**
      * Ejecutar una consulta a la BD.
-     * @param consulta 
+     * @param consulta
+     * @return 
      */
-    private void consultaSQL(String consulta) {
+    private String consultaSQL(String consulta) {
+        String resultado = "";
         String tmp =    "SELECT * " +
                         "FROM "+this.getTBL()+" p " +
                         "WHERE "
@@ -166,9 +169,10 @@ public class ClienteBD {
             int column = meta.getColumnCount();
             while (res.next()){
                 for (int i = 1; i <= column; i++){
-                    System.out.println("..."+meta.getColumnTypeName(i));
-                    //System.out.print(res.getString(i));
-                    //System.out.print("|");
+                    //System.out.println("..."+meta.getColumnTypeName(i));
+                    resultado = resultado + res.getString(i);
+                    //resultado = resultado + "|\n";
+                    resultado = resultado + "|";
                 }
                 System.out.println("");
                 System.out.println("*****************************************");
@@ -179,12 +183,14 @@ public class ClienteBD {
             //Logger.getLogger(ClienteBD.class.getName()).log(Level.SEVERE, null, ex);
             System.err.println("ERROR - consultaSQL");
         }
+        return resultado;
     }
     
     public static void main(String[] args) {
-        int codigo = -1;
-        ClienteBD cli = null;
-        boolean bandera;
+        int codigo = -1;        // variables de control
+        String resultado = "";  // variables de control
+        ClienteBD cli = null;   // variables de control
+        boolean bandera;        // variables de control
         
         codigo = 3;
         switch (codigo){
@@ -209,8 +215,10 @@ public class ClienteBD {
         bandera = cli.conectar();
         if (!bandera) return;
         
-        cli.consultaSQL("er");
-        cli.desconectar();
+        resultado = cli.consultaSQL("er");
+        resultado = resultado.replace("  ", "");
         
+        System.out.println(resultado);
+        cli.desconectar();
     }
 }
