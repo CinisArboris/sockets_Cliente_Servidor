@@ -3,8 +3,6 @@ package CLIENTE;
 import java.sql.*;
 import java.util.Properties;
 import java.util.Scanner;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 /**
  *
@@ -21,10 +19,6 @@ public class ClienteBD {
     private Connection CNX;
 
     public ClienteBD() {
-        this.HOST   = "localhost";
-        this.PORT   = "5432";
-        this.BD     = "db_agenda";
-        this.TBL    = "amigo";
         this.NAV    = new Properties();
         this.CNX    = null;
     }
@@ -82,16 +76,31 @@ public class ClienteBD {
     public Connection getCNX() {
         return CNX;
     }
-    public void setCNX(String url, Properties nav) {
+    public boolean setCNX(String url, Properties nav) {
+        boolean bandera;
         try {
             this.CNX = DriverManager.getConnection(url, nav);
+            bandera = true;
         } catch (SQLException ex) {
             //Logger.getLogger(ClienteBD.class.getName()).log(Level.SEVERE, null, ex);
             System.err.println("ERROR - setCNX");
-            System.exit(404);
+            bandera = false;
         }
+        return bandera;
     }
-    
+//       :
+//      t#,
+//     ;##W.
+//    :#L:WE
+//   .KG  ,#D
+//   EE    ;#f
+//  f#.     t#i
+//  :#G     GK
+//   ;#L   LW.
+//    t#f f#:
+//     f#D#;
+//      G#t
+//       t
      /**
      * Ingresar las credenciales para la conexión : BD.
      */
@@ -108,7 +117,8 @@ public class ClienteBD {
     /**
      * Iniciar la conexión a la BD.
      */
-    private void conectar() {
+    private boolean conectar() {
+        boolean bandera;
         this.setNAV("user", this.getUSR());
         this.setNAV("password", this.getPWD());
         this.setNAV("ssl", "false");
@@ -117,8 +127,12 @@ public class ClienteBD {
                             this.getHOST()+":"+
                             this.getPORT()+"/"+
                             this.getBD();
-        this.setCNX(urlBD, this.getNAV());
+        
+        bandera = this.setCNX(urlBD, this.getNAV());
+        if (!bandera) return false;
         System.out.println("200 - CONECTADO");
+        bandera = true;
+        return bandera;
     }
     
     /**
@@ -139,16 +153,22 @@ public class ClienteBD {
      * @param consulta 
      */
     private void consultaSQL(String consulta) {
+        String tmp =    "SELECT * " +
+                        "FROM "+this.getTBL()+" p " +
+                        "WHERE "
+                            + "p.per_nom LIKE '%"+consulta+"%' or "
+                            + "p.per_appm LIKE '%"+consulta+"%' or "
+                            + "p.per_email LIKE '%"+consulta+"%'";
         try {
             Statement shell = this.getCNX().createStatement();
-            ResultSet res = shell.executeQuery(consulta);
+            ResultSet res = shell.executeQuery(tmp);
             ResultSetMetaData meta = res.getMetaData();
-            
             int column = meta.getColumnCount();
             while (res.next()){
                 for (int i = 1; i <= column; i++){
-                    System.out.print(res.getString(i));
-                    System.out.print("|");
+                    System.out.println("..."+meta.getColumnTypeName(i));
+                    //System.out.print(res.getString(i));
+                    //System.out.print("|");
                 }
                 System.out.println("");
                 System.out.println("*****************************************");
@@ -156,32 +176,41 @@ public class ClienteBD {
             shell.close();
             res.close();
         } catch (SQLException ex) {
-            Logger.getLogger(ClienteBD.class.getName()).log(Level.SEVERE, null, ex);
+            //Logger.getLogger(ClienteBD.class.getName()).log(Level.SEVERE, null, ex);
             System.err.println("ERROR - consultaSQL");
         }
     }
     
     public static void main(String[] args) {
-        /* Servidor local  */
-//        ClienteBD cli = new ClienteBD();
+        int codigo = -1;
+        ClienteBD cli = null;
+        boolean bandera;
         
-        /* Servidor freyja */
-//        ClienteBD cli = new ClienteBD("192.168.1.9", "5432", 
-//                "db_agenda", "amigo");
-        
-        /* Servidor windows */
-        ClienteBD cli = new ClienteBD("localhost", "5432", 
-                "db_agenda", "amigo");
-        
-        /* Servidor tecno  */
-//        ClienteBD cli = new ClienteBD("www.tecnoweb.org.bo", "5432",
-//                "db_agenda", "amigo");
-        
-        
+        codigo = 3;
+        switch (codigo){
+            case 0 :
+                cli = new ClienteBD();
+            case 1 :
+                // FREYJA SERVER
+                cli = new ClienteBD("192.168.1.9", "5432",
+                        "db_agenda", "persona");
+            case 2 :
+                // WINDOWS SERVER
+                cli = new ClienteBD("localhost", "5432",
+                        "db_agenda", "persona");
+            case 3 :
+                // TECNOWEB SERVER
+                cli = new ClienteBD("www.tecnoweb.org.bo", "5432",
+                        "db_agenda", "persona");
+        }
+        if (cli == null) return;
         
         cli.signIN();
-        cli.conectar();
-        cli.consultaSQL("select * from amigo");
+        bandera = cli.conectar();
+        if (!bandera) return;
+        
+        cli.consultaSQL("er");
         cli.desconectar();
+        
     }
 }

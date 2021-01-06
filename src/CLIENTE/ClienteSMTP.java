@@ -499,7 +499,7 @@ public class ClienteSMTP {
             case 3 :
                 cli = new ClienteSMTP("www.tecnoweb.org.bo", 25,
                     "minpres@presidencia.gob.bo",
-                    "grupo01sa@tecnoweb.org.bo");
+                    "agenda@tecnoweb.org.bo");
         }
         if (cli == null) return;
         
