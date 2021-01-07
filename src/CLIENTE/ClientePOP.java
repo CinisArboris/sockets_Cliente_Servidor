@@ -123,20 +123,22 @@ public class ClientePOP {
     }
     
     /**
-     * Establecer los parametros necesarios, para crear las conexiones con el servidor.
+     * Establecer el socket con el servidor POP.
      * @param host
      * @param port
      * @return 
      */
     public boolean setSOK(String host, int port) {
+        boolean bandera;
         try {
             this.SOK = new Socket(host, port);
-            return true;
+            bandera = true;
         } catch (IOException ex) {
             //Logger.getLogger(ClientePOP.class.getName()).log(Level.SEVERE, null, ex);
-            System.err.println("[ERROR] - setSOK");
-            return false;
+            System.err.println("ERROR - setSOK");
+            bandera = false;
         }
+        return bandera;
     }
     
     public BufferedReader getENTRADA() {
@@ -164,11 +166,12 @@ public class ClientePOP {
 //     f#D#;
 //      G#t
 //       t
-    
     /**
      * Ingresar las credenciales para la conexión : POP.
+     * @return 
      */
-    private void signIN() {
+    private boolean signIN() {
+        boolean bandera;
         try {
             System.err.println("POP : Conectando : "+this.getHOST()+":"+this.getPORT());
             Scanner input = new Scanner(System.in);
@@ -180,19 +183,25 @@ public class ClientePOP {
             System.err.print("[POP :: PWD] ");
             this.setPWD(input.nextLine());
             TimeUnit.SECONDS.sleep(1);
+            
+            bandera = true;
         } catch (InterruptedException ex) {
-            Logger.getLogger(ClientePOP.class.getName()).log(Level.SEVERE, null, ex);
-            System.err.println("[ERROR] - signIN");
+            //Logger.getLogger(ClientePOP.class.getName()).log(Level.SEVERE, null, ex);
+            System.err.println("ERROR - signIN");
+            bandera = false;
         }
+        return bandera;
     }
     
     /**
-     * Iniciar los medios de comunicación con el servidor.
+     * Iniciar : [socket] y [entrada/salida] con el servidor POP.
      * @return 
      */
     private boolean conectar() {
+        boolean bandera;
         try {
-            if (!this.setSOK(this.getHOST(), this.getPORT())) return false;
+            bandera = this.setSOK(this.getHOST(), this.getPORT());
+            if (!bandera) return false;
             
             InputStream var01 = this.getSOK().getInputStream();
             InputStreamReader var02 = new InputStreamReader(var01);
@@ -207,18 +216,22 @@ public class ClientePOP {
             
             // #Primer contacto.
             System.out.println("[S]"+"\u001B[33m"+this.getENTRADA().readLine());
+            
+            bandera = true;
         } catch (IOException | InterruptedException ex) {
             //Logger.getLogger(ClientePOP.class.getName()).log(Level.SEVERE, null, ex);
-            System.out.println("[ERROR]- conectar");
+            System.err.println("ERROR - conectar");
+            bandera = false;
         }
-        return true;
+        return bandera;
     }
     
     /**
-     * Validación : USER/PASSWORD.
+     * Validar credenciales de la cuenta.
      * @return 
      */
     private boolean validando_LOGIN_POP() {
+        boolean bandera;
         String tmp;
         try {
             // #set usuario al servidor.
@@ -240,17 +253,20 @@ public class ClientePOP {
             // La validación, segun la respuesta del error.
             if (tmp.contains("Authentication failed")){
                 System.err.println("Credenciales invalidas.");
-                return false;
+                bandera = false;
+                return bandera;
             }
+            bandera = true;
         } catch (IOException | InterruptedException ex) {
             //Logger.getLogger(ClientePOP.class.getName()).log(Level.SEVERE, null, ex);
-            System.err.println("[ERROR] - validando_LOGIN_POP");
+            System.err.println("ERROR - validando_LOGIN_POP");
+            bandera = false;
         }
-        return true;
+        return bandera;
     }
 
     /**
-     * Cerrar los medios de comunicación con el servidor.
+     * Finalizar : [socket] y [entrada/salida] con el servidor POP.
      */
     private void desconectar() {
         try {
@@ -266,7 +282,8 @@ public class ClientePOP {
             this.getSALIDA().close();
             TimeUnit.SECONDS.sleep(2);
         } catch (IOException | InterruptedException ex) {
-            Logger.getLogger(ClientePOP.class.getName()).log(Level.SEVERE, null, ex);
+            //Logger.getLogger(ClientePOP.class.getName()).log(Level.SEVERE, null, ex);
+            System.err.println("ERROR - desconectar");
         }
     }
     
@@ -311,7 +328,19 @@ public class ClientePOP {
         tmp2 = tmp[1];
         this.setSMS(tmp2);
     }
-    
+//       :
+//      t#,
+//     ;##W.
+//    :#L:WE
+//   .KG  ,#D
+//   EE    ;#f
+//  f#.     t#i
+//  :#G     GK
+//   ;#L   LW.
+//    t#f f#:
+//     f#D#;
+//      G#t
+//       t
     /**
      * Conexión al servidior - Listar buzon - Guardar el código último mensaje.
      */
@@ -429,17 +458,27 @@ public class ClientePOP {
             System.err.println("[System]ERROR SLEEP");
         }
     }
-
+//       :
+//      t#,
+//     ;##W.
+//    :#L:WE
+//   .KG  ,#D
+//   EE    ;#f
+//  f#.     t#i
+//  :#G     GK
+//   ;#L   LW.
+//    t#f f#:
+//     f#D#;
+//      G#t
+//       t
     /**
      * Obtener y mostrar el último mensaje de la bandeja.
      * @return 
      */
-    private boolean test_cliente_03() {
+    private boolean pop_ultimo_mensaje() {
+        boolean bandera;
         String tmp;
         try {
-            if (!this.validando_LOGIN_POP()) return false;
-            TimeUnit.SECONDS.sleep(1);
-            
             // #get estadisticas del correo.
             System.out.println("STAT");
             this.setCMD("STAT"+"\r\n");
@@ -464,13 +503,15 @@ public class ClientePOP {
             System.out.println("[S]"+"\u001B[33m"+tmp);
             TimeUnit.SECONDS.sleep(1);
             
+            bandera = true;
         } catch (IOException | InterruptedException ex) {
             //Logger.getLogger(ClientePOP.class.getName()).log(Level.SEVERE, null, ex);
-            System.err.println("[System] - error");
+            System.err.println("ERROR - test_cliente_03");
+            bandera = false;
         }
-        return true;
+        return bandera;
     }
-
+    
     public static void main(String[] args) {
         int codigo;
         ClientePOP cli;
@@ -493,9 +534,11 @@ public class ClientePOP {
         bandera = cli.conectar();
         if (!bandera) return;
         
-        bandera = cli.test_cliente_03();
+        bandera = cli.validando_LOGIN_POP();
+        if (!bandera) return;
         
-        // Si [bandera] true, se realizo la conexion.
+        bandera = cli.pop_ultimo_mensaje();
+        
         if (bandera) cli.desconectar();
     }
 }
