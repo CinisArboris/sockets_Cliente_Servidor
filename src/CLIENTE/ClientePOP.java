@@ -249,7 +249,6 @@ public class ClientePOP {
         return true;
     }
 
-    
     /**
      * Cerrar los medios de comunicación con el servidor.
      */
@@ -270,6 +269,7 @@ public class ClientePOP {
             Logger.getLogger(ClientePOP.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
+    
     /**
      * Recopila multiples lineas de la respuesta del servidor.
      * @param entrada
@@ -299,7 +299,6 @@ public class ClientePOP {
         }        
         return lines;
     }
-    
     
     /**
      * Guarda el ultimo mensaje de la bandeja.
@@ -472,7 +471,6 @@ public class ClientePOP {
         return true;
     }
 
-    
     public static void main(String[] args) {
         int codigo;
         ClientePOP cli;
@@ -500,6 +498,4 @@ public class ClientePOP {
         // Si [bandera] true, se realizo la conexion.
         if (bandera) cli.desconectar();
     }
-
-    
 }
