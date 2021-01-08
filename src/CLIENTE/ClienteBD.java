@@ -9,14 +9,14 @@ import java.util.Scanner;
  * @author eyver-dev
  */
 public class ClienteBD {
-    private String HOST;
-    private String PORT;
-    private String BD;
-    private String TBL;
-    private String USR;
-    private String PWD;
-    private Properties NAV;
-    private Connection CNX;
+    private String HOST;    // Variables del Servidor.
+    private String PORT;    // Variables del Servidor.
+    private String BD;      // Variables de la BD.
+    private String TBL;     // Variables de la BD.
+    private String USR;     // Variables de la Sesión.
+    private String PWD;     // Variables de la Sesión.
+    private Properties NAV; // Variables del Sistema.
+    private Connection CNX; // Variables del Sistema.
 
     public ClienteBD() {
         this.NAV    = new Properties();
@@ -148,7 +148,19 @@ public class ClienteBD {
             System.err.println("ERROR - desconectar");
         }
     }
-    
+//       :
+//      t#,
+//     ;##W.
+//    :#L:WE
+//   .KG  ,#D
+//   EE    ;#f
+//  f#.     t#i
+//  :#G     GK
+//   ;#L   LW.
+//    t#f f#:
+//     f#D#;
+//      G#t
+//       t
     /**
      * Ejecutar una consulta a la BD.
      * @param consulta
@@ -185,40 +197,52 @@ public class ClienteBD {
         }
         return resultado;
     }
-    
-    public static void main(String[] args) {
-        int codigo = -1;        // variables de control
-        String resultado = "";  // variables de control
-        ClienteBD cli = null;   // variables de control
-        boolean bandera;        // variables de control
-        
-        codigo = 3;
-        switch (codigo){
-            case 0 :
-                cli = new ClienteBD();
-            case 1 :
-                // FREYJA SERVER
-                cli = new ClienteBD("192.168.1.9", "5432",
-                        "db_agenda", "persona");
-            case 2 :
-                // WINDOWS SERVER
-                cli = new ClienteBD("localhost", "5432",
-                        "db_agenda", "persona");
-            case 3 :
-                // TECNOWEB SERVER
-                cli = new ClienteBD("www.tecnoweb.org.bo", "5432",
-                        "db_agenda", "persona");
-        }
-        if (cli == null) return;
-        
-        cli.signIN();
-        bandera = cli.conectar();
-        if (!bandera) return;
-        
-        resultado = cli.consultaSQL("er");
-        resultado = resultado.replace("  ", "");
-        
-        System.out.println(resultado);
-        cli.desconectar();
-    }
+//       :
+//      t#,
+//     ;##W.
+//    :#L:WE
+//   .KG  ,#D
+//   EE    ;#f
+//  f#.     t#i
+//  :#G     GK
+//   ;#L   LW.
+//    t#f f#:
+//     f#D#;
+//      G#t
+//       t
+//    public static void main(String[] args) {
+//        int codigo = -1;        // variables de control
+//        String resultado = "";  // variables de control
+//        ClienteBD cli = null;   // variables de control
+//        boolean bandera;        // variables de control
+//        
+//        codigo = 3;
+//        switch (codigo){
+//            case 0 :
+//                cli = new ClienteBD();
+//            case 1 :
+//                // FREYJA SERVER
+//                cli = new ClienteBD("192.168.1.9", "5432",
+//                        "db_agenda", "persona");
+//            case 2 :
+//                // WINDOWS SERVER
+//                cli = new ClienteBD("localhost", "5432",
+//                        "db_agenda", "persona");
+//            case 3 :
+//                // TECNOWEB SERVER
+//                cli = new ClienteBD("www.tecnoweb.org.bo", "5432",
+//                        "db_agenda", "persona");
+//        }
+//        if (cli == null) return;
+//        
+//        cli.signIN();
+//        bandera = cli.conectar();
+//        if (!bandera) return;
+//        
+//        resultado = cli.consultaSQL("er");
+//        resultado = resultado.replace("  ", "");
+//        System.out.println(resultado);
+//        
+//        cli.desconectar();
+//    }
 }

@@ -18,9 +18,9 @@ public class ClientePOP {
     private String PWD;                 // Variables de Sesión.
     private String CMD;                 // Variables de Comunicación.
     private String SMS;                 // Variables de Comunicación.
-    private Socket SOK;                 // Variables del System.
-    private BufferedReader ENTRADA;     // Variables del System.
-    private DataOutputStream SALIDA;    // Variables del System.
+    private Socket SOK;                 // Variables del Sistema.
+    private BufferedReader ENTRADA;     // Variables del Sistema.
+    private DataOutputStream SALIDA;    // Variables del Sistema.
 
     public ClientePOP() {
     }
@@ -113,7 +113,6 @@ public class ClientePOP {
     public void setSMS(String SMS) {
         this.SMS = SMS;
     }
-    
     /**
      * Obtener el objeto [socket] para crear las conexiones con el servidor.
      * @return 
@@ -121,7 +120,6 @@ public class ClientePOP {
     public Socket getSOK() {
         return SOK;
     }
-    
     /**
      * Establecer el socket con el servidor POP.
      * @param host
@@ -140,7 +138,6 @@ public class ClientePOP {
         }
         return bandera;
     }
-    
     public BufferedReader getENTRADA() {
         return ENTRADA;
     }
@@ -170,7 +167,7 @@ public class ClientePOP {
      * Ingresar las credenciales para la conexión : POP.
      * @return 
      */
-    private boolean signIN() {
+    public boolean signIN() {
         boolean bandera;
         try {
             System.err.println("POP : Conectando : "+this.getHOST()+":"+this.getPORT());
@@ -197,7 +194,7 @@ public class ClientePOP {
      * Iniciar : [socket] y [entrada/salida] con el servidor POP.
      * @return 
      */
-    private boolean conectar() {
+    public boolean conectar() {
         boolean bandera;
         try {
             bandera = this.setSOK(this.getHOST(), this.getPORT());
@@ -230,7 +227,7 @@ public class ClientePOP {
      * Validar credenciales de la cuenta.
      * @return 
      */
-    private boolean validando_LOGIN_POP() {
+    public boolean validando_LOGIN_POP() {
         boolean bandera;
         String tmp;
         try {
@@ -242,6 +239,9 @@ public class ClientePOP {
             System.out.println("[S]"+"\u001B[33m"+tmp);
             TimeUnit.SECONDS.sleep(1);
             
+            bandera = this.validarRESPONSE(tmp);
+            if (!bandera) return false;
+            
             // #set password al servidor.
             System.out.println("PASS *****");
             this.setCMD("PASS"+" "+this.getPWD()+"\r\n");
@@ -250,12 +250,9 @@ public class ClientePOP {
             System.out.println("[S]"+"\u001B[33m"+tmp);
             TimeUnit.SECONDS.sleep(1);
             
-            // La validación, segun la respuesta del error.
-            if (tmp.contains("Authentication failed")){
-                System.err.println("Credenciales invalidas.");
-                bandera = false;
-                return bandera;
-            }
+            bandera = this.validarRESPONSE(tmp);
+            if (!bandera) return false;
+            
             bandera = true;
         } catch (IOException | InterruptedException ex) {
             //Logger.getLogger(ClientePOP.class.getName()).log(Level.SEVERE, null, ex);
@@ -267,8 +264,10 @@ public class ClientePOP {
 
     /**
      * Finalizar : [socket] y [entrada/salida] con el servidor POP.
+     * @return 
      */
-    private void desconectar() {
+    public boolean desconectar() {
+        boolean bandera;
         try {
             // #Fin del mensaje.
             this.setCMD("quit"+"\r\n");
@@ -281,10 +280,13 @@ public class ClientePOP {
             this.getENTRADA().close();
             this.getSALIDA().close();
             TimeUnit.SECONDS.sleep(2);
+            bandera = true;
         } catch (IOException | InterruptedException ex) {
             //Logger.getLogger(ClientePOP.class.getName()).log(Level.SEVERE, null, ex);
             System.err.println("ERROR - desconectar");
+            bandera = false;
         }
+        return bandera;
     }
     
     /**
@@ -458,24 +460,12 @@ public class ClientePOP {
             System.err.println("[System]ERROR SLEEP");
         }
     }
-//       :
-//      t#,
-//     ;##W.
-//    :#L:WE
-//   .KG  ,#D
-//   EE    ;#f
-//  f#.     t#i
-//  :#G     GK
-//   ;#L   LW.
-//    t#f f#:
-//     f#D#;
-//      G#t
-//       t
+    
     /**
      * Obtener y mostrar el último mensaje de la bandeja.
      * @return 
      */
-    private boolean pop_ultimo_mensaje() {
+    public boolean pop_ultimo_mensaje() {
         boolean bandera;
         String tmp;
         try {
@@ -512,33 +502,45 @@ public class ClientePOP {
         return bandera;
     }
     
-    public static void main(String[] args) {
-        int codigo;
-        ClientePOP cli;
-        boolean bandera;
+//    public static void main(String[] args) {
+//        int codigo;
+//        ClientePOP cli;
+//        boolean bandera;
+//        
+//        codigo = 2;
+//        cli = null;
+//        switch (codigo){
+//            case 0 :
+//                cli = new ClientePOP("127.0.0.1", 110);
+//            case 1 :
+//                cli = new ClientePOP("192.168.1.2", 110);
+//            case 2 :
+//                cli = new ClientePOP("www.tecnoweb.org.bo", 110);
+//        }
+//        if (cli == null) return;
+//        
+//        cli.signIN();
+//        
+//        bandera = cli.conectar();
+//        if (!bandera) return;
+//        
+//        bandera = cli.validando_LOGIN_POP();
+//        if (!bandera) return;
+//        
+//        bandera = cli.pop_ultimo_mensaje();
+//        
+//        if (bandera) cli.desconectar();
+//    }
+
+    private boolean validarRESPONSE(String tmp) {
+        boolean bandera = true;
         
-        codigo = 2;
-        cli = null;
-        switch (codigo){
-            case 0 :
-                cli = new ClientePOP("127.0.0.1", 110);
-            case 1 :
-                cli = new ClientePOP("192.168.1.2", 110);
-            case 2 :
-                cli = new ClientePOP("www.tecnoweb.org.bo", 110);
-        }
-        if (cli == null) return;
-        
-        cli.signIN();
-        
-        bandera = cli.conectar();
-        if (!bandera) return;
-        
-        bandera = cli.validando_LOGIN_POP();
-        if (!bandera) return;
-        
-        bandera = cli.pop_ultimo_mensaje();
-        
-        if (bandera) cli.desconectar();
+        if (
+                tmp.contains("Rejecting open proxy")
+                ||
+                tmp.contains("Authentication failed")
+            )
+            bandera = false;
+        return bandera;
     }
 }
