@@ -9,11 +9,11 @@ import java.util.Scanner;
  * @author eyver-dev
  */
 public class ClienteUSR {
-    ClienteBD cliBD;
-    ClientePOP cliPOP;
-    ClienteSMTP cliSMTP;
-    Scanner input;
-    String color;
+    private ClienteBD cliBD;
+    private ClientePOP cliPOP;
+    private ClienteSMTP cliSMTP;
+    private Scanner input;
+    private String color;
 
     public ClienteUSR() {
         this.cliBD = new ClienteBD();
@@ -105,20 +105,24 @@ public class ClienteUSR {
             
             System.out.println("=============================================");
             System.out.println("0. Salir.");
-            System.out.println("1. Iniciar proceso.");
-            comando = cli.getInput().nextLine();
-            if ("0".equals(comando)) bandera = false;
-            if (!"1".equals(comando)) return;
+            System.out.println("h. Ayuda.");
             System.out.println("=============================================");
             System.out.println("1. [cliente] - Solicitar información.");
-            cli.solicitar_informacion();
             System.out.println("2. [sistema] - Leer mensaje.");
-            cli.leer_mensaje();
             System.out.println("3. [sistema] - Procesar mensaje.");
             System.out.println("4. [sistema] - Responder mensaje.");
             System.out.println("5. [cliente] - Lectura de la respuesta.");
             System.out.println("=============================================");
+            comando = cli.getInput().nextLine();
             
+            if ("0".equals(comando)) bandera = false;
+            
+            if ("1".equals(comando)){
+                cli.solicitar_informacion();
+            }
+            if ("2".equals(comando)){
+                cli.leer_mensaje();
+            }
         }
     }
 
@@ -166,7 +170,7 @@ public class ClienteUSR {
         if (!bandera) return bandera;
         
         // Si hay problemas, terminar el proceso.
-        bandera = this.cliSMTP.enviar_mensaje(this.cliSMTP.getSUBJECT(), this.cliSMTP.getDATA());
+        bandera = this.cliSMTP.enviar_mensaje();
         if (!bandera) return bandera;
         
         // G00D B0Y !!!
@@ -192,7 +196,7 @@ public class ClienteUSR {
         bandera = this.cliPOP.conectar();
         if (!bandera) return bandera;
         
-        bandera = this.cliPOP.validando_LOGIN_POP();
+        bandera = this.cliPOP.validar_sign_IN();
         if (!bandera) return bandera;
         
         // Si hay problemas, terminar el proceso.
