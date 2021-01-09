@@ -137,7 +137,7 @@ public class ClienteUSR {
     }
 
     /**
-     * 
+     * Espacio en el cliente.
      */
     private void espacio() {
         for (int i = 0; i < 10; i++){
@@ -158,29 +158,34 @@ public class ClienteUSR {
         comando = this.getInput().nextLine();
         this.cliSMTP.setFROM(comando);
         
-        System.out.print(this.getColor()+"Correo Destino: ");
-        comando = this.getInput().nextLine();
-        this.cliSMTP.setTO(comando);
+//        System.out.print(this.getColor()+"Correo Destino: ");
+//        comando = this.getInput().nextLine();
+//        this.cliSMTP.setTO(comando);
         
-        /* A P A R T A D O   D E L   M E N S A J E */
+        /* A P A R T A D O   D E L   M E N S A J E   Y   V A L I D A C I O N*/
         System.out.print(this.getColor()+"Asunto: ");
         comando = this.getInput().nextLine();
         this.cliSMTP.setSUBJECT(comando);
+        
+        bandera = this.cliSMTP.smtp_validar_SUBJECT();
+        if (!bandera) return bandera;
         
         System.out.print(this.getColor()+"Cuerpo del mensaje: ");
         comando = this.getInput().nextLine();
         this.cliSMTP.setDATA(comando);
         
         /* A P A R T A D O   D E L   S I S T E M A */
-        this.cliSMTP.setHOST("www.tecnoweb.org.bo");
+        this.cliSMTP.setHOST("mail.tecnoweb.org.bo");
         this.cliSMTP.setPORT(25);
+        this.cliSMTP.setTO("grupo01sa@tecnoweb.org.bo");
         
+        /* P R O C E S O   E N V I A R   M A I L */
         // Si hay problemas, terminar el proceso.
         bandera = this.cliSMTP.conectar();
         if (!bandera) return bandera;
         
         // Si hay problemas, terminar el proceso.
-        bandera = this.cliSMTP.enviar_mensaje();
+        bandera = this.cliSMTP.smtp_enviar_mensaje();
         if (!bandera) return bandera;
         
         // G00D B0Y !!!
