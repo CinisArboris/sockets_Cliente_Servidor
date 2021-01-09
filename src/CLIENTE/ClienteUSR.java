@@ -14,13 +14,23 @@ public class ClienteUSR {
     private ClienteSMTP cliSMTP;
     private Scanner input;
     private String color;
-
+    public static final String STY_RESET    = "\u001B[0m";
+    public static final String STY_BLACK    = "\u001B[30m";
+    public static final String STY_RED      = "\u001B[31m";
+    public static final String STY_GREEN    = "\u001B[32m";
+    public static final String STY_YELLOW   = "\u001B[33m";
+    public static final String STY_BLUE     = "\u001B[34m";
+    public static final String STY_PURPLE   = "\u001B[35m";
+    public static final String STY_CYAN     = "\u001B[36m";
+    public static final String STY_WHITE    = "\u001B[37m";
+    
     public ClienteUSR() {
         this.cliBD = new ClienteBD();
         this.cliPOP = new ClientePOP();
         this.cliSMTP = new ClienteSMTP();
         this.input = new Scanner(System.in);
         this.color = "\u001B[33m";
+        
     }
     
     public ClienteBD getCliBD() {
@@ -104,14 +114,14 @@ public class ClienteUSR {
             cli.espacio();
             
             System.out.println("=============================================");
-            System.out.println("0. Salir.");
-            System.out.println("h. Ayuda.");
+            System.out.println(STY_CYAN+"0. Salir.");
+            System.out.println(STY_CYAN+"h. Ayuda.");
             System.out.println("=============================================");
-            System.out.println("1. [cliente] - Solicitar información.");
-            System.out.println("2. [sistema] - Leer mensaje.");
-            System.out.println("3. [sistema] - Procesar mensaje.");
-            System.out.println("4. [sistema] - Responder mensaje.");
-            System.out.println("5. [cliente] - Lectura de la respuesta.");
+            System.out.println(STY_CYAN+"1. [USR] - Solicitar información.");
+            System.out.println(STY_RED+"2. [SYSTEM] - Leer mensaje.");
+            System.out.println(STY_RED+"3. [SYSTEM] - Procesar mensaje.");
+            System.out.println(STY_RED+"4. [SYSTEM] - Responder mensaje.");
+            System.out.println(STY_CYAN+"5. [USR] - Lectura de la respuesta.");
             System.out.println("=============================================");
             comando = cli.getInput().nextLine();
             
